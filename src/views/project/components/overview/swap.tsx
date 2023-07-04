@@ -10,11 +10,11 @@ import { NetToChainId } from '@/utils';
 import customToast from '@/utils/customToast';
 import { useDebounce } from 'ahooks';
 import clsx from 'clsx';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { formatEther, parseEther, zeroAddress } from 'viem';
-import { useAccount, useBalance, useContractRead, useFeeData, useWalletClient } from 'wagmi';
-import { waitForTransaction, writeContract } from 'wagmi/actions';
+import { formatEther, formatUnits, parseEther, parseGwei, zeroAddress } from 'viem';
+import { useAccount, useBalance, useBlockNumber, useContractRead, useFeeData, usePublicClient, useQuery, useWalletClient } from 'wagmi';
+import { getContract, waitForTransaction, writeContract } from 'wagmi/actions';
 import SliPill from './sli-pill';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 
@@ -57,10 +57,6 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
     },
   });
   const { address: account, isConnected } = useAccount()
-  const { data: feeData } = useFeeData({
-    watch: true,
-  })
-
   const { data: launchBalance } = useBalance({
     address: account,
     token: tokenLaunchToken?.address === zeroAddress ? undefined : tokenLaunchToken?.address
@@ -69,22 +65,50 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
     address: account,
     token: token.addr as `0x${string}`
   })
-
   const balance = useMemo(() => isMint ? launchBalance : tokenBalance, [isMint, launchBalance, tokenBalance])
+
+  const publicClient = usePublicClient()
+  const { data: feeData } = useFeeData({
+    watch: true,
+    formatUnits: 'wei',
+    staleTime: 10 * 1e3,
+  })
+
+  const { data: gas, refetch, isRefetching } = useQuery(['queryMint'], {
+    queryFn: () => {
+      return publicClient.estimateContractGas({
+        address: token.addr as `0x${string}`,
+        abi: tokenAbi,
+        functionName: isMint ? 'mint' : 'burn',
+        args: [account, balance?.value ?? 0n, 0n],
+        account: account ?? '0x',
+        value: isMint ? balance?.value ?? 0n : 0n,
+      })
+    },
+    enabled: Boolean(account !== undefined && balance !== undefined),
+    staleTime: 10 * 1e3,
+  })
+
+  useEffect(() => {
+    if (account && balance && feeData?.gasPrice && isMint) refetch()
+  }, [feeData?.gasPrice, refetch, isMint, balance, account])
+
   const maxBalance = useMemo(() => {
-    if (isConnected) return Number(balance?.formatted ?? 0) - Number(feeData?.formatted.gasPrice ?? 0) * 1.5
+    if (gas && balance?.value && feeData?.gasPrice && feeData?.maxFeePerGas) {
+      const gasLimit = gas * (feeData.gasPrice + feeData?.maxFeePerGas) * 105n / 100n;
+      return isMint ? Number(formatEther(balance.value - gasLimit)) : Number(formatEther(balance.value));
+    }
     return 0
-  }, [balance?.formatted, feeData?.formatted.gasPrice, isConnected])
+  }, [balance?.value, feeData?.gasPrice, feeData?.maxFeePerGas, gas, isMint])
 
   const minReceiveAmount = useMemo(() => slippage !== undefined ? receiveAmount * (10000n - BigInt(Math.floor(slippage * 1e2))) / (10000n) : 0n, [receiveAmount, slippage])
   const minReceive = useMemo(() => formatEther(minReceiveAmount), [minReceiveAmount])
 
   const [isActionLoading, setIsActionLoading] = useState(false);
-  const { data: walletClient } = useWalletClient();
 
   const mintBurn = async () => {
     const result = await writeContract({
-      address: token.addr as `0x{string}`,
+      address: token.addr as `0x${string}`,
       abi: tokenAbi,
       functionName: isMint ? 'mint' : 'burn',
       args: [account, payAmount, 0n],
@@ -153,7 +177,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
             {
               balance && <button
                 className="badge badge-ghost badge-sm badge-outline"
-                disabled={isLoading}
+                disabled={isLoading || isRefetching}
                 onClick={() => {
                   setValue('amount', maxBalance)
                 }}>
