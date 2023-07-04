@@ -16,7 +16,7 @@ const ProjectsView = ({ ...attrs }: ProjectsViewProps) => {
     <main {...attrs} className={clsx('mx-auto max-w-screen-xl space-y-12 lg:my-16', attrs.className)}>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">All Projects</h2>
-        <LocaleLink className="btn-xs btn normal-case md:h-10 md:px-6" href="/create">
+        <LocaleLink className="btn-xs btn normal-case md:h-10 md:px-6" href="/">
           Create Project
         </LocaleLink>
       </div>

@@ -9,7 +9,7 @@ export const useRedirect = (end: string = '') => {
   const { locale } = useLocale();
   useEffect(() => {
     if (path.includes(`${locale}/${locale}`)) {
-      router.replace(`/${locale}/404/`.replaceAll('//', '/'));
+      router.replace(`/${locale}/404`);
     }
     if (path && path.startsWith(`/${locale}`) && router.route === '/404') {
       router.replace(`/${locale}${router.route}`);
