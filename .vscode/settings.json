@@ -1,7 +1,4 @@
 {
-  "cSpell.words": [
-
-  ],
   "files.associations": {
     "*.css": "postcss"
   },
@@ -23,7 +20,5 @@
   "i18n-ally.localesPaths": [
     "src/locales"
   ],
-  "i18n-ally.sourceLanguage": "en",
-  "commentTranslate.source": "DarkCWK.youdao-youdao",
-  "commentTranslate.multiLineMerge": false
+  "i18n-ally.sourceLanguage": "en"
 }

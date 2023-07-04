@@ -21,6 +21,7 @@ import { getContract, writeContract, waitForTransaction } from 'wagmi/actions'
 import { UpLoadString, UploadFile } from '@/utils/ipfs';
 import { IHotpot_Metadata } from '@/libs/types/metadata';
 import { factoryAbi } from '@/libs/sdk/contracts/Factory';
+import { LAYOUT_ID } from '@/conf';
 
 export enum CreateAction {
   Details,
@@ -102,6 +103,12 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
     }
     if (!isDisabled) {
       setStepIndex(index)
+    }
+    if(typeof window !== 'undefined' && document){
+      const view = document.querySelector(`#${LAYOUT_ID}`)
+      if(view){
+        view.scrollTop = 0
+      }
     }
   }
   const prevStep = () => {
@@ -261,6 +268,7 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
           {
             loading: 'Deploy Project...',
             success: () => {
+              isSuccess = true
               return <b>Deploy Success !</b>
             },
             error: (e) => {
@@ -268,6 +276,10 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
             }
           }
         )
+      }
+      if(isSuccess){
+        methods.reset()
+        changeStep(CreateAction.Details)
       }
     } catch (error) {
       console.error(error)
@@ -289,7 +301,7 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
         }
       </ul>
       <FormProvider {...methods}>
-        <div className="w-full md:px-16">
+        <div className="w-full md:px-16 overflow-x-hidden">
           <TheDetails className={clsx(
             'transition-transform duration-500',
             stepIndex === 0

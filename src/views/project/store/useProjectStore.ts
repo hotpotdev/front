@@ -6,9 +6,11 @@ import { combine } from "zustand/middleware"
 export const useProjectStore = create(combine({
   isSettingModalOpen: false,
   token: undefined, // token: IToken
+  refetchCount: 0,
 } as {
   isSettingModalOpen: boolean
   token?: IToken
+  refetchCount: number,
 }, (set) => {
   return {
     setToken(token: IToken) {
@@ -16,6 +18,9 @@ export const useProjectStore = create(combine({
     },
     setIsSettingModalOpen(isSettingModalOpen: boolean) {
       set({ isSettingModalOpen })
+    },
+    refetch(){
+      set((state) => ({ refetchCount: state.refetchCount  }))
     }
   }
 }))

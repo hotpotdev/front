@@ -30,10 +30,11 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
       burnTax: (viewToken?.burnTax || 0) * 1e2
     }
   })
+  console.log(token)
 
   const [newAdmin, newTreasury, newMintTax, newBurnTax] = watch(['admin', 'treasury', 'mintTax', 'burnTax'])
-  const newMintTaxRate = useMemo(()=> BigInt(newMintTax * 1e2),[newMintTax])
-  const newBurnTaxRate = useMemo(()=> BigInt(newBurnTax * 1e2),[newBurnTax])
+  const newMintTaxRate = useMemo(()=> BigInt(Math.floor(newMintTax * 1e2)),[newMintTax])
+  const newBurnTaxRate = useMemo(()=> BigInt(Math.floor(newBurnTax * 1e2)),[newBurnTax])
 
   const [editAdmin, setEditAdmin] = useState(false)
   const [editTreasury, setEditTreasury] = useState(false)
@@ -214,7 +215,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
               <dl className="space-y-2">
                 <dt className="text-accent">Tax Rate</dt>
                 <dd className="font-bold">
-                  Mint {viewToken?.mintTax ?? 0 * 100} % | Burn {viewToken?.burnTax ?? 0 * 100} %
+                  Mint {(viewToken?.mintTax ?? 0) * 1e2} % | Burn {(viewToken?.burnTax ?? 0) * 1e2} %
                 </dd>
               </dl>
               {editRate ? (

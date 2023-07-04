@@ -78,18 +78,18 @@ export const CERT_TOKENS: I_CERT_TOKENS = {
       ...bsc.nativeCurrency,
       logo: BnbchainIconUrl,
     },
-    {
-      name: 'Tether',
-      symbol: 'USDT',
-      logo: '/static/images/usdt.webp',
-      address: '0x55d398326f99059ff775485246999027b3197955'
-    },
-    {
-      name: 'USD Coin',
-      symbol: 'USDC',
-      logo: '/static/images/usdc.png',
-      address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'
-    }
+    // {
+    //   name: 'Tether',
+    //   symbol: 'USDT',
+    //   logo: '/static/images/usdt.webp',
+    //   address: '0x55d398326f99059ff775485246999027b3197955'
+    // },
+    // {
+    //   name: 'USD Coin',
+    //   symbol: 'USDC',
+    //   logo: '/static/images/usdc.png',
+    //   address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'
+    // }
   ],
   [goerli.id]: [
     {

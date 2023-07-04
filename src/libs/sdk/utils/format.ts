@@ -1,4 +1,3 @@
-import { formatUnits } from "viem";
 import { IToken } from "../hooks/useToken";
 import { PriceByDayFieldsFragment, PriceByHourFieldsFragment } from "../types/graphql";
 

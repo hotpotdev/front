@@ -1,16 +1,16 @@
 
 import { getStaticPaths, makeStaticProps } from '@/utils/getI18nStatic';
-import ProjectsView from '@/views/projects';
+import CreateView from '@/views/create';
 import type { NextPage } from 'next/types';
 
-const ProjectsPage: NextPage = () => {
+const CreatePage: NextPage = () => {
   return (
     <>
-      <ProjectsView/>
+      <CreateView/>
     </>
   );
 };
 
-const getStaticProps = makeStaticProps(['common','projects']);
+const getStaticProps = makeStaticProps(['common','create']);
 export { getStaticPaths, getStaticProps };
-export default ProjectsPage;
+export default CreatePage;

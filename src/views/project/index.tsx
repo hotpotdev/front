@@ -2,7 +2,7 @@ import { DiscordIcon, SettingIcon, TelegramIcon, TwitterIcon, WebsiteIcon } from
 import clsx from 'clsx';
 import { ChevronDoubleDownIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image'
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import TheOverview from './components/overview';
 import LocaleLink from '@/components/locale-link';
 import TheVesting from './components/vesting';
@@ -52,13 +52,7 @@ const ProjectView = ({ ...attrs }: ProjectViewProps) => {
   const { data: metadata, isLoading: isMetadataLoading } = useFetchMetadata(token?.metaUri as `ipfs://${string}` || '') // TODO metadata url
   const tokenLogo = useMemo(() => metadata?.image || (token?.addr ? SVG2Base64(GenerateGradientSVG(token?.addr)) : undefined), [metadata?.image, token?.addr])
   const isAdmin = useMemo(() => account && token?.admin && token.admin.toLowerCase() === account.toLowerCase(), [account, token?.admin])
-  useEffect(() => {
-    if (id < 0 && typeof window !== 'undefined' && !isLoading && !token) push(`/${locale}/404`)
-  }, [id, isLoading, locale, push, token])
 
-  if (id < 0 || !token || isLoading || (Boolean(token?.metaUri) && isMetadataLoading)) {
-    return <ProjectSkeleton />
-  }
   const addStableToken = async () => {
     if (token) {
       await connector?.watchAsset?.({
@@ -68,6 +62,15 @@ const ProjectView = ({ ...attrs }: ProjectViewProps) => {
         decimals: 18,
       })
     }
+  }
+
+
+  useEffect(() => {
+    if (id < 0 && typeof window !== 'undefined' && !isLoading && !token) push(`/${locale}/404`)
+  }, [id, isLoading, locale, push, token])
+
+  if (id < 0 || !token || isLoading || (Boolean(token?.metaUri) && isMetadataLoading)) {
+    return <ProjectSkeleton />
   }
   return (
     <main {...attrs} className={clsx('mx-auto w-full max-w-screen-lg lg:my-16 space-y-12', attrs.className)}>

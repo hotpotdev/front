@@ -31,10 +31,10 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
   const [isMint, setIsMint] = useState(true);
   const { watch, register, setValue, resetField } = useForm<{
     amount?: number,
-    slippage: number,
+    slippage?: number,
   }>({
     defaultValues: {
-      slippage: 0.001,
+      slippage: 0.1, // 0.1 %
     }
   })
   const [amount, slippage] = watch(['amount', 'slippage'])
@@ -76,7 +76,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
     return 0
   }, [balance?.formatted, feeData?.formatted.gasPrice, isConnected])
 
-  const minReceiveAmount = useMemo(() => receiveAmount * (10000n - BigInt(Math.floor(slippage * 1e4))) / (10000n), [receiveAmount, slippage])
+  const minReceiveAmount = useMemo(() => slippage !== undefined ? receiveAmount * (10000n - BigInt(Math.floor(slippage * 1e2))) / (10000n) : 0n, [receiveAmount, slippage])
   const minReceive = useMemo(() => formatEther(minReceiveAmount), [minReceiveAmount])
 
   const [isActionLoading, setIsActionLoading] = useState(false);
@@ -184,17 +184,16 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
           <div className="px-2 py-6 shadow dropdown-content bg-base-200 rounded-box z-50">
             <div className="flex items-center justify-between space-x-2">
               <div className="text-xs">Slippage: </div>
-              <SliPill sli={[0.005, 0.01, 0.03]} onSelected={item => setValue('slippage', item)} selectValue={slippage} />
+              <SliPill sli={[0.005, 0.01, 0.03]} onSelected={item => setValue('slippage', item * 1e2)} selectValue={slippage} />
               <label>
                 <input
                   {...register('slippage', {
-
                   })}
                   type="number"
                   placeholder="0.01"
                   className={clsx(
                     'input text-right input-xs h-8 w-16',
-                    [0.005, 0.01, 0.03].findIndex(item => slippage) != -1 && 'input-primary',
+                    [0.005, 0.01, 0.03].findIndex(item => item * 1e2 === slippage) != -1 && 'input-primary',
                   )}
                 />
               </label>

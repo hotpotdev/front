@@ -22,7 +22,7 @@ const TheLandingLayout = ({ children, ...attrs }: TheLandingLayoutProps) => {
   const router = useRouter()
   const { locale } = useLocale()
   const isActive = useCallback((url: string) => {
-    return router.asPath.startsWith(`/${locale}${url}`)
+    return url === '/' ? router.asPath === `/${locale}${url}` : router.asPath.startsWith(`/${locale}${url}`)
   }, [locale, router.asPath])
   return (
     <div  {...attrs} id={LAYOUT_ID} className={clsx('drawer w-full h-full overflow-y-auto relative', attrs.className)} ref={view}>
@@ -38,13 +38,17 @@ const TheLandingLayout = ({ children, ...attrs }: TheLandingLayoutProps) => {
             <label htmlFor={LAYOUT_DRAWER_ID} className="flex-none md:hidden btn btn-sm btn-ghost text-base">
               <MenuIcon className="w-8 h-8 stroke-current " />
             </label>
-            <LocaleLink href='/' className="space-x-2">
+            {/* <LocaleLink href='/' className="space-x-2">
               <HotpotLogoIcon className="w-8 h-8 fill-primary stroke-primary" />
               <h1 className="hidden">{t('title')}</h1>
-            </LocaleLink>
+            </LocaleLink> */}
+            <div className="space-x-2">
+              <HotpotLogoIcon className="w-8 h-8 fill-primary stroke-primary" />
+              <h1 className="hidden">{t('title')}</h1>
+            </div>
             <div className="flex-1 hidden md:flex items-center space-x-3 md:space-x-12 lg:space-x-20 font-semibold">
-              {/* <LocaleLink href='/projects' className={clsx('hover:text-primary', isActive('/projects') && 'text-primary')}>Project List</LocaleLink> */}
-              <LocaleLink href='/create' className={clsx('hover:text-primary', isActive('/create') && 'text-primary')}>Create Project</LocaleLink>
+              <LocaleLink href='/projects' className={clsx('hover:text-primary', isActive('/projects') && 'text-primary')}>Project List</LocaleLink>
+              <LocaleLink href='/' className={clsx('hover:text-primary', isActive('/') && 'text-primary')}>Create Project</LocaleLink>
             </div>
             <div className="flex-1 justify-end items-center space-x-3 md:space-x-6">
               <ConnectWallet className="rounded-2xl" />
@@ -57,7 +61,6 @@ const TheLandingLayout = ({ children, ...attrs }: TheLandingLayoutProps) => {
         <footer
           className={clsx(
             'w-full container mx-auto border-t border-border1 py-12 mt-16 text-sm text-center flex justify-between items-center',
-
           )}
         >
           {t('copyright', { year: new Date().getUTCFullYear() })}
@@ -67,11 +70,11 @@ const TheLandingLayout = ({ children, ...attrs }: TheLandingLayoutProps) => {
         <label htmlFor={LAYOUT_DRAWER_ID} className="drawer-overlay"></label>
         <ul className="menu p-4 w-80 h-full bg-base-200 ">
           {/* Sidebar content here */}
-          {/* <li>
-            <LocaleLink href='/projects' className="hover:text-primary">Project List</LocaleLink>
-          </li> */}
           <li>
-            <LocaleLink href='/create' className="hover:text-primary">Create Project</LocaleLink>
+            <LocaleLink href='/projects' className={clsx('hover:text-primary', isActive('/projects') && 'text-primary')}>Project List</LocaleLink>
+          </li>
+          <li>
+            <LocaleLink href='/' className={clsx('hover:text-primary', isActive('/') && 'text-primary')}>Create Project</LocaleLink>
           </li>
         </ul>
       </aside>
