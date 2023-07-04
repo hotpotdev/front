@@ -1,0 +1,222 @@
+{
+  "banner": {
+    "title": "A token fair-launch",
+    "subtitle": "& management platform",
+    "text": "Power by Bonding Curve.",
+    "create": {
+      "href": "/create",
+      "text": "Create a project"
+    }
+  },
+  "statistics": {
+    "title": "",
+    "items": [
+      {
+        "title": "100+",
+        "text": "Created Projects"
+      },
+      {
+        "title": "10 M+",
+        "text": "Transaction Volume"
+      },
+      {
+        "title": "5000+",
+        "text": "Unique Addresses"
+      }
+    ]
+  },
+  "booster": {
+    "title": " Web3 Project Booster",
+    "items": [
+      {
+        "title": "Modularize",
+        "text": "Suitable for all kinds of Web3 Projects & DAOs.",
+        "src": "/images/booster-{{theme}}-one.png"
+      },
+      {
+        "title": "Fairness",
+        "text": "Everyone have a fair chance to participate, and unlikely to manipulate the market.",
+        "src": "/images/booster-{{theme}}-two.png"
+      },
+      {
+        "title": "Economical",
+        "text": "Fundraising and initial liquidity are not required.",
+        "src": "/images/booster-{{theme}}-three.png"
+      },
+      {
+        "title": "Decentralized",
+        "text": "Open to anyone, so anyone can launch a new token.",
+        "src": "/images/booster-{{theme}}-four.png"
+      }
+    ]
+  },
+  "use": {
+    "title": "Use Case",
+    "items": [
+      {
+        "title": "Web3 Community",
+        "text": "Web3 community starters do not need to hold an initial token sale. Finding the sweet spot between supply and demand in cryptocurrency pricing is challenging, given the undeniable psychological implications. However, this is not necessary for a web3 community starter to succeed. Instead, they can focus on building a strong community and generating cash flow for the treasury. By doing this, they can create a sustainable and long-term business model.",
+        "src": "/images/case-one.png"
+      },
+      {
+        "title": "KOL Fans Club",
+        "text": "No-code development allows key opinion leaders (KOLs) to quickly and affordably onboard their followers to a Web3 community. By using tokenomics to build a sustainable subscription model, creators and communities can benefit from growth. This is a significant departure from the Web2 model, in which platforms control the majority of the value.",
+        "src": "/images/case-two.png"
+      },
+      {
+        "title": "SBT Pricing",
+        "text": "Soulbound Projects (SBTs) are non-transferable Projects that represent a person's identity in Web3. Since SBTs do not have market liquidity, they cannot be priced using traditional methods, such as order books or liquidity pools. However, SBTs can be priced using bonding curves, which are mathematical functions that define the relationship between the price of a token and the amount of Projects that are available.",
+        "src": "/images/case-three.png"
+      }
+    ]
+  },
+  "questions": {
+    "title": "FAQs",
+    "items": [
+      {
+        "title": "How to launch my token? Should I pay for that?",
+        "text": "There is no one-size-fits-all approach to launching a token.But it’s hard to start a Web3 project without token economy.It's time to get strategic about the tokenomics which will serve as the underlying incentive structure . In many cases, tokenomics is the right mechanism for members to connect their wallets,propose,review,and vote on treasury or protocol decisions. Based on the bonding curve there is no need of cost, even initial liquidity, to launch a token by your own."
+      },
+      {
+        "title": "What is the bonding curve ?",
+        "text": "A bonding curve is a mathematical formula that defines the relationship between the supply and price of a token. It is a decentralized way to buy and sell Projects without the need for an exchange. Bonding curves are often used in DeFi projects to allow users to buy and sell Projects directly from the project's treasury."
+      },
+      {
+        "title": "What does a bonding curve bring to a Web3 project and its community?",
+        "text": "Bonding curves are a decentralized and transparent way to distribute Projects. They allow anyone to buy Projects directly from the project's treasury, rather than through a centralized exchange. This helps to ensure that Projects are distributed more efficiently and fairly, as whales with large holdings cannot control the price. <br/><br/> Bonding curves also provide a way for investors to buy Projects at a fixed price. This protects them from volatility in the market and encourages them to buy Projects early. This can help to build a strong community around the project and increase its chances of success."
+      }
+    ]
+  },
+  "roadmap": {
+    "title": "Our Roadmap",
+    "init": 2,
+    "items": [
+      {
+        "time": "2022 Q4",
+        "title": "Beta",
+        "descriptions": ["Launchpad Beta Version released", "Multichain Integration"]
+      },
+      {
+        "time": "2023 Q1",
+        "title": "Mainnet",
+        "descriptions": [
+          "Deploy on BNB Chain and Zksync",
+          "Onboarding worldwide Web3 projects",
+          "Hosting community event for mainnet launch"
+        ]
+      },
+      {
+        "time": "2023 Q2",
+        "title": "Fire",
+        "descriptions": [
+          "Mainnet Deployment",
+          "Hotpot DAO Governance Launch",
+          "Incentive program",
+          "Integration with DeFi protocol"
+        ]
+      },
+      {
+        "time": "2023 Q3",
+        "title": "Boiling",
+        "descriptions": [
+          "Liquidity module release",
+          "Cross Chain integration",
+          "Automated Strategies for individual",
+          "Enterprise strategies for web3 projects and DAOs"
+        ]
+      }
+    ]
+  },
+  "ecosystems": {
+    "title": "Partnerships & Grants",
+    "items": [
+      {
+        "alt": "",
+        "href": "",
+        "src": "/images/ethereum.png"
+      },
+      {
+        "alt": "",
+        "href": "",
+        "src": "/images/binance.png"
+      },
+      {
+        "alt": "",
+        "href": "",
+        "src": "/images/polygon-{{theme}}.png"
+      },
+      {
+        "alt": "",
+        "href": "",
+        "src": "/images/zksync-{{theme}}.svg"
+      },
+      {
+        "alt": "",
+        "href": "",
+        "src": "/images/iotex.png"
+      },
+      {
+        "alt": "",
+        "href": "",
+        "src": "/images/acala.png"
+      },
+      {
+        "alt": "",
+        "href": "",
+        "src": "/images/clv-{{theme}}.png"
+      },
+      {
+        "alt": "",
+        "href": "",
+        "src": "/images/ontology-{{theme}}.png"
+      }
+    ]
+  },
+  "community": {
+    "title": "Community",
+    "items": [
+      {
+        "href": "https://t.me/hotpotdao",
+        "icon": "telegram",
+        "text": "Telegram"
+      },
+      {
+        "href": "https://twitter.com/Hotpotdao",
+        "icon": "twitter",
+        "text": "Twitter"
+      },
+      {
+        "href": "https://discord.gg/vmmjgXZvCX",
+        "icon": "discord",
+        "text": "Discord"
+      },
+      {
+        "href": "https://medium.com/@HOTPOTDAO",
+        "icon": "medium",
+        "text": "Medium"
+      },
+      {
+        "href": "https://github.com/hotpotlabs",
+        "icon": "github",
+        "text": "Github"
+      }
+    ]
+  },
+  "email": {
+    "title": "Subscribe to our mailing list",
+    "name": {
+      "placeholder": "Name",
+      "error": "invalid name, max length 20!"
+    },
+    "email": {
+      "placeholder": "Your Email here",
+      "error": "invalid email address!"
+    },
+    "subscribe": {
+      "text": "Subscribe",
+      "loading": "Subscribe ... ⌛",
+      "success": "Subscribe Success! 🎉",
+      "error": "Subscribe Error,Please try again! 🎃"
+    }
+  }
+}

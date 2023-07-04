@@ -1,0 +1,37 @@
+query fetchPriceHoursWhereToken($address: ID!, $fastTimestamp: BigInt) {
+  priceByHours(
+    where: { token_: { id: $address }, timestamp_gte: $fastTimestamp }
+    orderDirection: desc
+    orderBy: timestamp
+  ) {
+    ...PriceByHourFields
+  }
+}
+
+query fetchPriceDaysWhereToken($address: ID!, $fastTimestamp: BigInt) {
+  priceByHours(
+    where: { token_: { id: $address }, timestamp_gte: $fastTimestamp }
+    orderDirection: desc
+    orderBy: timestamp
+  ) {
+    ...PriceByHourFields
+  }
+}
+
+fragment PriceByHourFields on PriceByHour {
+  minPrice
+  maxPrice
+  openPrice
+  closePrice
+  timestamp
+  tokenTvl
+}
+
+fragment PriceByDayFields on PriceByDay {
+  minPrice
+  maxPrice
+  openPrice
+  closePrice
+  timestamp
+  tokenTvl
+}

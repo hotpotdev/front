@@ -1,0 +1,12 @@
+query fetchCountersWhereType($type: String!, $first: Int, $skip: Int, $orderBy: CounterEntity_orderBy, $orderDirection: OrderDirection) {
+  counterEntities(where: {type_contains_nocase: $type}, first: $first, skip: $skip, orderBy: $orderBy, orderDirection: $orderDirection) {
+    ...CounterFields
+  }
+}
+
+fragment CounterFields on CounterEntity {
+  count
+  type
+  id
+  timestamp
+}

@@ -1,0 +1,5 @@
+<svg viewBox="0 0 31 30" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="15.063" cy="15" r="15" fill="currentColor" />
+  <path d="M21.3092 15.1843L15.0611 18.8119L8.81299 15.1843L15.0611 5L21.3092 15.1843Z" fill="hsl(var(--b1))" />
+  <path d="M21.3129 16.3485L15.0611 24.9988L8.81299 16.3484L15.0611 19.9751L21.3129 16.3485Z" fill="hsl(var(--b1))" />
+</svg>

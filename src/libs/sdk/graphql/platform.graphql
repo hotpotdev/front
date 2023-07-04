@@ -1,0 +1,23 @@
+query fetchPlatform {
+  platformEntities {
+    ...PlatformFields
+  }
+  bondingCurveTypes {
+    ...BondingCurveTypeFields
+  }
+}
+
+fragment PlatformFields on PlatformEntity {
+  addr
+  route
+  admin
+  burnTax
+  mintTax
+  treasury
+
+}
+
+fragment BondingCurveTypeFields on BondingCurveType {
+  name
+  impl
+}

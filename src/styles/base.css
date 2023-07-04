@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#__next {
+  width: 100%;
+  height: 100%;
+  font-size: var(--f-size);
+  letter-spacing: 1px;
+  color: hsl(var(--bc));
+  background-color: hsl(var(--b1));
+  direction: ltr;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+#nprogress .bar {
+  background: hsl(var(--p)) !important;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px hsl(var(--p)), 0 0 5px hsl(var(--p)) !important;
+}
+#nprogress .spinner-icon {
+  border-top-color: hsl(var(--p)) !important;
+  border-left-color: hsl(var(--p)) !important;
+}

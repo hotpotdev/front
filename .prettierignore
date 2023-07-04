@@ -1,0 +1,10 @@
+.git
+.husky
+.next
+_next
+out
+dist
+.vscode
+node_module
+*.config.js
+*.config.ts

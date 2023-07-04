@@ -1,0 +1,51 @@
+
+query fetchMintBurnsWhereFrom($from: Bytes!, $first: Int, $skip: Int, $orderBy: MintBurnEntity_orderBy, $orderDirection: OrderDirection) {
+  mintBurnEntities(
+    where: {from: $from}
+    first: $first
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    skip: $skip
+  ) {
+    ...MintBurnFields
+  }
+}
+
+query fetchMintBurnsWhereTo($to: Bytes!, $first: Int, $skip: Int, $orderBy: MintBurnEntity_orderBy, $orderDirection: OrderDirection) {
+  mintBurnEntities(
+    where: {to: $to}
+    first: $first
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    skip: $skip
+  ) {
+    ...MintBurnFields
+  }
+}
+
+query fetchMintBurnsWhereToken($tokenAddress: Bytes!, $first: Int, $skip: Int, $orderBy: MintBurnEntity_orderBy, $orderDirection: OrderDirection) {
+  mintBurnEntities(
+    where: {token_: {addr: $tokenAddress}}
+    first: $first
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    skip: $skip
+  ) {
+    ...MintBurnFields
+  }
+}
+
+fragment MintBurnFields on MintBurnEntity {
+  id
+  direction
+  erc20Amount
+  from
+  nativeAmount
+  hash
+  timestamp
+  to
+  blockNum
+  token {
+    ...TokenFields
+  }
+}

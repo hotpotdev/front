@@ -1,0 +1,41 @@
+/* theme */
+:root {
+  --h-header: 4.2rem;
+  --f-size: 12px;
+}
+
+/* @screen sm {
+  :root {
+    --h-header: 4rem;
+    --f-size: 12px;
+  }
+}
+*/
+
+@screen md {
+  :root {
+    --h-header: 4.2rem;
+    --f-size: 13px;
+  }
+}
+
+@screen lg {
+  :root {
+    --h-header: 4.4rem;
+    --f-size: 14px;
+  }
+}
+
+@screen xl {
+  :root {
+    --h-header: 4.6rem;
+    --f-size: 15px;
+  }
+}
+
+@screen 2xl {
+  :root {
+    --h-header: 4.8rem;
+    --f-size: 16px;
+  }
+}

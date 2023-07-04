@@ -1,0 +1,128 @@
+query fetchTokens($first: Int, $skip: Int, $orderBy: TokenEntity_orderBy, $orderDirection: OrderDirection) {
+  tokenEntities(first: $first, skip: $skip, orderBy: $orderBy, orderDirection: $orderDirection) {
+    ...TokenFields
+  }
+}
+
+query fetchToken($address: ID!) {
+  tokenEntity(id: $address) {
+    ...TokenFields
+  }
+}
+
+query fetchTokensWhereIndex(
+  $index: BigInt!
+  $first: Int
+  $skip: Int
+  $orderBy: TokenEntity_orderBy
+  $orderDirection: OrderDirection
+) {
+  tokenEntities(where: { index: $index }, first: $first, skip: $skip, orderBy: $orderBy, orderDirection: $orderDirection) {
+    ...TokenFields
+  }
+}
+
+query fetchTokensWhereAddress(
+  $address: Bytes!
+  $first: Int
+  $skip: Int
+  $orderBy: TokenEntity_orderBy
+  $orderDirection: OrderDirection
+) {
+  tokenEntities(where: { addr: $address }, first: $first, skip: $skip, orderBy: $orderBy, orderDirection: $orderDirection) {
+    ...TokenFields
+  }
+}
+
+query fetchTokensWhereName(
+  $name: String!
+  $first: Int
+  $skip: Int
+  $orderBy: TokenEntity_orderBy
+  $orderDirection: OrderDirection
+) {
+  tokenEntities(
+    where: { name_contains_nocase: $name  }
+    first: $first
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    ...TokenFields
+  }
+}
+
+query fetchTokensWhereSymbol(
+  $symbol: String!
+  $first: Int
+  $skip: Int
+  $orderBy: TokenEntity_orderBy
+  $orderDirection: OrderDirection
+) {
+  tokenEntities(
+    where: { symbol_contains_nocase: $symbol }
+    first: $first
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    ...TokenFields
+  }
+}
+
+
+query fetchOwnedTokens(
+  $admin: Bytes!
+  $first: Int
+  $skip: Int
+  $orderBy: TokenEntity_orderBy
+  $orderDirection: OrderDirection
+) {
+  tokenEntities(where: { admin: $admin }, first: $first, skip: $skip, orderBy: $orderBy, orderDirection: $orderDirection) {
+    ...TokenFields
+  }
+}
+
+query fetchCreateTokens(
+  $creator: Bytes!
+  $first: Int
+  $skip: Int
+  $orderBy: TokenEntity_orderBy
+  $orderDirection: OrderDirection
+) {
+  tokenEntities(
+    where: { creator: $creator }
+    first: $first
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    ...TokenFields
+  }
+}
+
+fragment TokenFields on TokenEntity {
+  addr
+  admin
+  creator
+  net
+  bondingCurveType
+  burnTax
+  createTimestamp
+  currentPrice
+  factory
+  index
+  lockValue
+  marketCap
+  memberCount
+  metaUri
+  mintTax
+  name
+  params
+  raisingToken
+  supply
+  symbol
+  tokenType
+  treasury
+  treasuryFee
+}

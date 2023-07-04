@@ -1,0 +1,34 @@
+/* scrollbar */
+.not-scroll {
+  --scrollbar-thumb: transparent;
+  --scrollbar-track: transparent;
+  --scrollbar-width: 0px;
+  --scrollbar-height: 0px;
+  --fixfox-width: none;
+}
+
+* {
+  --scrollbar-thumb: transparent;
+  --scrollbar-track: hsl(var(--p));
+  --scrollbar-width: 4px;
+  --scrollbar-height: 4px;
+  --fixfox-width: thin;
+}
+
+* {
+  /* fixfox */
+  scrollbar-color: var(--scrollbar-track) var(--scrollbar-thumb);
+  scrollbar-width: var(--fixfox-width);
+  /* webkit */
+  &::-webkit-scrollbar {
+    @apply h-[var(--scrollbar-height)] w-[var(--scrollbar-width)] border-none bg-transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-track);
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+}
