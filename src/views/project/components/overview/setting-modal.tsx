@@ -30,7 +30,6 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
       burnTax: (viewToken?.burnTax || 0) * 1e2
     }
   })
-  console.log(token)
 
   const [newAdmin, newTreasury, newMintTax, newBurnTax] = watch(['admin', 'treasury', 'mintTax', 'burnTax'])
   const newMintTaxRate = useMemo(()=> BigInt(Math.floor(newMintTax * 1e2)),[newMintTax])

@@ -165,7 +165,7 @@ const TheOverview = ({ token, ...attrs }: TheOverviewProps) => {
                 <li><button type="button" className={clsx(interval === 7 ? 'active' : '')}
                   onClick={() => {
                     setInterval(7)
-                    setIntervalType('day')
+                    setIntervalType('hour')
                   }}>7 Day</button></li>
                 <li><button type="button" className={clsx(interval === 30 ? 'active' : '')}
                   onClick={() => {

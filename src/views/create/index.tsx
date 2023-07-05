@@ -22,6 +22,8 @@ import { UpLoadString, UploadFile } from '@/utils/ipfs';
 import { IHotpot_Metadata } from '@/libs/types/metadata';
 import { factoryAbi } from '@/libs/sdk/contracts/Factory';
 import { LAYOUT_ID } from '@/conf';
+import { useRouter } from 'next/router';
+import useLocale from '@/hooks/useLocale';
 
 export enum CreateAction {
   Details,
@@ -35,6 +37,8 @@ type CreateViewProps = React.HTMLAttributes<HTMLElement> & {
 }
 
 const CreateView = ({ ...attrs }: CreateViewProps) => {
+  const router = useRouter()
+  const { locale } = useLocale()
   const { isConnected, address: account } = useAccount();
   const chanCertToken = useChainCertToken()
   const [stepIndex, setStepIndex] = useState<CreateAction>(CreateAction.Details)
@@ -104,9 +108,9 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
     if (!isDisabled) {
       setStepIndex(index)
     }
-    if(typeof window !== 'undefined' && document){
+    if (typeof window !== 'undefined' && document) {
       const view = document.querySelector(`#${LAYOUT_ID}`)
-      if(view){
+      if (view) {
         view.scrollTop = 0
       }
     }
@@ -277,9 +281,8 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
           }
         )
       }
-      if(isSuccess){
-        methods.reset()
-        changeStep(CreateAction.Details)
+      if (isSuccess) {
+        router.push(`/${locale}/projects`)
       }
     } catch (error) {
       console.error(error)

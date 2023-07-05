@@ -51,13 +51,15 @@ const VolumeChart = ({ token, intervalType, interval, ...attrs }: VolumeChartPro
   })
 
   const data = useMemo(() => intervalType === 'hour' ? hourList?.map(FormatPriceBy) : dayList?.map(FormatPriceBy), [dayList, hourList, intervalType]);
-  const step = useMemo(() => intervalType === 'hour' ? 3600 * 1e3 : 3600 * 24 * 1e3, [intervalType])
+  const step = useMemo(() => intervalType === 'hour' ? 1 * 60 * 60 * 1e3 : 24 * 60 * 60 * 1e3, [intervalType])
 
   const dataFormatted = useMemo(() => {
     let result: ItemType[] = []
     const dataTime = data?.[data?.length - 1]?.timestamp;
-    const fast = dataTime && fastTimestamp == 0 ? Math.max(dataTime, fastTimestamp * 1e3) : fastTimestamp * 1e3;
-    const last = lastTimestamp * 1e3;
+    const fastIntTime = intervalType === 'hour' ? (fastTimestamp - fastTimestamp % 3600) * 1e3 : new Date(fastTimestamp*1e3).setHours(0,0,0,0)
+    const lastIntTime = (intervalType === 'hour' ? (lastTimestamp - lastTimestamp % 3600) : lastTimestamp) * 1e3
+    const fast = dataTime && fastIntTime == 0 ? Math.max(dataTime, fastIntTime) : fastIntTime;
+    const last = lastIntTime;
     let next = fast;
     let item = null;
     let items = [];
@@ -65,22 +67,29 @@ const VolumeChart = ({ token, intervalType, interval, ...attrs }: VolumeChartPro
       next = i + step;
       item = data?.find(data => data.timestamp === i)
       items = data?.filter(data => data.timestamp > i && data.timestamp < next) || []
-      if (item) {
-        result.push(item)
-      } else {
-        result.push({
-          minPrice: 0,
-          maxPrice: 0,
-          openPrice: 0,
-          closePrice: 0,
-          timestamp: i,
-          tokenTvl: 0,
+      let obj: ItemType = {
+        minPrice: 0,
+        maxPrice: 0,
+        openPrice: 0,
+        closePrice: 0,
+        timestamp: i,
+        tokenTvl: 0,
+      }
+      if (item) obj = item;
+      if (items && items.length > 0) {
+        obj.timestamp = Math.min(items.sort(item => item.timestamp - item.timestamp)[0].timestamp,i)
+        items.forEach(item => {
+          obj.minPrice += item.minPrice
+          obj.maxPrice += item.maxPrice
+          obj.openPrice += item.openPrice
+          obj.closePrice += item.closePrice
+          obj.tokenTvl += item.tokenTvl
         })
       }
-      items?.map(item => result.push(item))
+      result.push(obj)
     }
     return result;
-  }, [data, fastTimestamp, lastTimestamp, step]);
+  }, [data, fastTimestamp, intervalType, lastTimestamp, step]);
 
   const id = `ProjectBondingCurveChart${new Date().getTime()}`
   if (isDayLoading || isHourLoading || dataFormatted.length === 0) return <ChartSkeleton />
@@ -123,7 +132,9 @@ const VolumeChart = ({ token, intervalType, interval, ...attrs }: VolumeChartPro
                 <div className="rounded bg-base-200 p-4 shadow text-xs">
                   <div className="space-x-1">
                     <span>Time:</span>
-                    <span>{format(new Date(item?.timestamp ?? 0), 'MM/dd/yyyy HH:mm:ss')}</span>
+                    <span>
+                      {format(new Date(item?.timestamp ?? 0), intervalType === 'hour' ? 'MM/dd/yyyy HH:mm:ss' : 'MM/dd/yyyy')}
+                    </span>
                   </div>
                   <div className="space-x-1">
                     <span>OpenPrice:</span>

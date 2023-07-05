@@ -159,7 +159,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
             })}
             type="number"
             placeholder='0.0'
-            className="input input-sm h-full input-bordered text-xl w-full"
+            className="input input-sm h-full input-bordered text-xl w-full pr-32 truncate"
           />
           {
             Boolean(amount && amount.toString().length > 0) && <button className="absolute right-24 top-7 text-base-content/30" onClick={() => {
