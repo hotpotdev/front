@@ -1,5 +1,5 @@
 import type { OracleGateway } from '@/libs/oracle';
-import { COINBASE_GATAWAY, getCoinbasePing, getCoinbasePrice } from '@/libs/oracle';
+import { getCoinbasePing, getCoinbasePrice } from '@/libs/oracle';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from '@tanstack/react-query';
 
@@ -12,7 +12,7 @@ export type useCoinbasePriceProps = {
 export type MultiCoinBasePriceProps = useCoinbasePriceProps[];
 
 export const useMultiCoinBasePrice = (props: MultiCoinBasePriceProps = []) => {
-  const queryFn = useCallback(() => Promise.all(props.map(item => getCoinbasePrice(item?.from ?? '', item.to || 'usd', item.gateway || COINBASE_GATAWAY))), [props])
+  const queryFn = useCallback(() => Promise.all(props.map(item => getCoinbasePrice(item?.from ?? '', item.to || 'usd', item.gateway))), [props])
   return useQuery({
     queryKey: props,
     queryFn,
@@ -54,7 +54,7 @@ export type CoinbasePingProps = {
   gateway?: OracleGateway;
 };
 
-export const useCoinbasePing = ({ gateway = COINBASE_GATAWAY, }: CoinbasePingProps = {}) => {
+export const useCoinbasePing = ({ gateway, }: CoinbasePingProps = {}) => {
   const fetchPing = useCallback(() => getCoinbasePing(gateway), [gateway]);
   return useQuery({
     queryKey: [{ gateway }],

@@ -49,13 +49,9 @@ const TheDeploy = ({ ...attrs }: TheDeployProps) => {
                 <dt className="font-bold whitespace-nowrap">Project Name</dt>
                 <dd className="text-base-content/80">{fromData.name}</dd>
               </dl>
-              <dl className="space-y-2 w-32">
-                <dt className="font-bold whitespace-nowrap">Project Ticker</dt>
-                <dd className="text-base-content/80">{fromData.symbol}</dd>
-              </dl>
               <dl className="space-y-2">
                 <dt className="font-bold">Project Description</dt>
-                <dd className={clsx('text-base-content/80 w-80 relative pr-6 whitespace-pre-wrap transition-transform duration-500', showDesc ? 'break-words h-auto' : 'truncate h-5')}>
+                <dd className={clsx('text-base-content/80 w-80 relative pr-6 break-words-wrap transition-transform duration-500', showDesc ? 'break-words h-auto' : 'truncate h-5')}>
                   {fromData.description || 'NoSet'}
                   {fromData?.description && fromData?.description.length > 67 && <ChevronDoubleDownIcon onClick={() => {
                     setShowDesc(!showDesc)
@@ -72,34 +68,34 @@ const TheDeploy = ({ ...attrs }: TheDeployProps) => {
               </dl>
               <div className="flex-1 ml-6">
                 <div className="flex justify-between h-20">
-                  <dl className="w-1/3 space-y-2">
+                  <dl className="w-1/3 space-y-2 pr-4">
                     <dt className="font-bold whitespace-nowrap">Twitter</dt>
-                    <dd className="text-base-content/80">{fromData.twitterUrl || 'NoSet'}</dd>
+                    <dd className="text-base-content/80 break-words">{fromData.twitterUrl || 'NoSet'}</dd>
                   </dl>
-                  <dl className="w-1/3 space-y-2">
+                  <dl className="w-1/3 space-y-2 pr-4">
                     <dt className="font-bold whitespace-nowrap  space-y-2">Discord</dt>
-                    <dd className="text-base-content/80">{fromData.discordUrl || 'NoSet'}</dd>
+                    <dd className="text-base-content/80  break-words">{fromData.discordUrl || 'NoSet'}</dd>
                   </dl>
-                  <dl className="w-1/3 space-y-2">
+                  <dl className="w-1/3 space-y-2 pr-4">
                     <dt className="font-bold whitespace-nowrap  space-y-2">Telegram</dt>
-                    <dd className="text-base-content/80">{fromData.telegramUrl || 'NoSet'}</dd>
+                    <dd className="text-base-content/80  break-words">{fromData.telegramUrl || 'NoSet'}</dd>
                   </dl>
                 </div>
-                <div className="flex justify-between h-20">
-                  <dl className="w-1/3 space-y-2">
+                <div className="flex justify-between h-20 space-x-4">
+                  <dl className="w-1/3 space-y-2 pr-4">
                     <dt className="font-bold whitespace-nowrap  space-y-2">Website</dt>
-                    <dd className="text-base-content/80">{fromData.websiteUrl || 'NoSet'}</dd>
+                    <dd className="text-base-content/80  break-words">{fromData.websiteUrl || 'NoSet'}</dd>
                   </dl>
-                  <dl className="w-1/3 space-y-2">
-                    <dt className="font-bold whitespace-nowrap space-y-2">Anchor Token</dt>
-                    <dd className="text-base-content/80">
+                  <dl className="w-1/3 space-y-2 pr-4">
+                    <dt className="font-bold whitespace-nowrap space-y-2">Token</dt>
+                    <dd className="text-base-content/80  break-words">
                       <p>{launchToken?.symbol || 'NoSet'}</p>
                       {launchToken?.address !== zeroAddress && <AddressView address={launchToken?.address} showShare={true} />}
                     </dd>
                   </dl>
-                  <dl className="w-1/3 space-y-2">
+                  <dl className="w-1/3 space-y-2 pr-4">
                     <dt className="font-bold whitespace-nowrap  space-y-2">Curve</dt>
-                    <dd className="text-base-content/80">{FmtFirstToUpper(bondingCurveType)}</dd>
+                    <dd className="text-base-content/80  break-words">{FmtFirstToUpper(bondingCurveType)}</dd>
                   </dl>
                 </div>
               </div>

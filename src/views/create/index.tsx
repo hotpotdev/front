@@ -216,7 +216,7 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
         payAmount: payAmount ?? 0n,
       } as ILaunchParam)
       try {
-        const hash = await factoryContract.write.deployToken([calldata, value])
+        const hash = await factoryContract.write.deployToken([calldata, value],{ value: payAmount })
         await waitForTransaction({ hash })
       } catch (error) {
         return Promise.reject(error)

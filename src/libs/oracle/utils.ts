@@ -10,5 +10,5 @@ export function getPriceUrl(
   to: string,
   url: string
 ) {
-  return url.replaceAll('//','/').replaceAll('{from}', from).replaceAll('{to}', to);
+  return url.replaceAll('{from}', from).replaceAll('{to}', to);
 }

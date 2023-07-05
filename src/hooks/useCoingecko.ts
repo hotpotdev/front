@@ -1,6 +1,6 @@
 import type { OracleGateway } from '@/libs/oracle';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { COINGECKO_GATAWAY, getCoingeckoPing, getCoingeckoPrice } from '@/libs/oracle';
+
+import { getCoingeckoPing, getCoingeckoPrice } from '@/libs/oracle';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from '@tanstack/react-query';
@@ -14,7 +14,7 @@ export type useCoingeckoPriceProps = {
 export type MultiuseCoingeckoPriceProps = useCoingeckoPriceProps[];
 
 export const useMultiCoingeckoPrice = (props: MultiuseCoingeckoPriceProps = []) => {
-  const queryFn = useCallback(() => Promise.all(props.map(item => getCoingeckoPrice(item?.from || '', item.to || 'usd', item.gateway || COINGECKO_GATAWAY))), [props])
+  const queryFn = useCallback(() => Promise.all(props.map(item => getCoingeckoPrice(item?.from || '', item.to || 'usd', item.gateway))), [props])
   return useQuery({
     queryKey: [...props],
     queryFn,
@@ -56,7 +56,7 @@ export type CoingeckoPingProps = {
   gateway?: OracleGateway;
 };
 
-export const useCoingeckoPing = ({ gateway = COINGECKO_GATAWAY }: CoingeckoPingProps = {}) => {
+export const useCoingeckoPing = ({ gateway }: CoingeckoPingProps = {}) => {
   const fetchPing = useCallback(() => getCoingeckoPing(gateway), [gateway]);
   return useQuery({
     queryKey: [{ gateway }],

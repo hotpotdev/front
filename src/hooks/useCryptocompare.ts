@@ -1,6 +1,6 @@
 import type { OracleGateway } from '@/libs/oracle';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { CRYPTOCOMPARE_GATAWAY, getCryptocomparePing, getCryptocomparePrice } from '@/libs/oracle';
+
+import { getCryptocomparePing, getCryptocomparePrice } from '@/libs/oracle';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from '@tanstack/react-query';
@@ -14,7 +14,7 @@ export type useCryptocomparePriceProps = {
 export type MultiuseCryptocomparePriceProps = useCryptocomparePriceProps[];
 
 export const useMultiCryptocomparePrice = (props: MultiuseCryptocomparePriceProps = []) => {
-  const queryFn = useCallback(() => Promise.all(props.map(item => getCryptocomparePrice(item?.from ?? '', item.to || 'usd', item.gateway || CRYPTOCOMPARE_GATAWAY))), [props])
+  const queryFn = useCallback(() => Promise.all(props.map(item => getCryptocomparePrice(item?.from ?? '', item.to || 'usd', item.gateway))), [props])
   return useQuery({
     queryKey: props,
     queryFn,
@@ -56,7 +56,7 @@ export type CryptocomparePingProps = {
   gateway?: OracleGateway;
 };
 
-export const useCryptocomparePing = ({ gateway = CRYPTOCOMPARE_GATAWAY }: CryptocomparePingProps = {}) => {
+export const useCryptocomparePing = ({ gateway }: CryptocomparePingProps = {}) => {
   const fetchPing = useCallback(() => getCryptocomparePing(gateway), [gateway]);
   return useQuery({
     queryKey: [{ gateway }],
