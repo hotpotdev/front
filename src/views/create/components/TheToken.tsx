@@ -82,7 +82,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
         <div className="w-full space-y-4">
           <div className="flex justify-between">
             <label htmlFor="expect-token-supply" className="block text-sm font-bold md:text-base">
-              Anchor Token Supply
+              Expect Token Supply
               <span>*</span>
             </label>
             <span className="text-sm text-accent" id="email-optional"></span>
@@ -117,12 +117,12 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
             </p>
           </div>
         </div>
-        {/*  *Anchor Token Price */}
+        {/*  *Expect Token Price */}
         <div className="flex w-full justify-between space-y-2 md:space-x-4 md:space-y-0">
           <div className="w-1/2">
             <div className="flex justify-between">
               <label htmlFor="expect-token-price" className="block text-sm font-bold md:text-base">
-                Anchor Token Price
+                Expect Token Price
                 <span>*</span>
               </label>
               <span className="text-sm text-accent" id="email-optional"></span>

@@ -49,6 +49,10 @@ const TheDeploy = ({ ...attrs }: TheDeployProps) => {
                 <dt className="font-bold whitespace-nowrap">Project Name</dt>
                 <dd className="text-base-content/80">{fromData.name}</dd>
               </dl>
+              <dl className="space-y-2 w-32">
+                <dt className="font-bold whitespace-nowrap">Project Ticker</dt>
+                <dd className="text-base-content/80">{fromData.symbol}</dd>
+              </dl>
               <dl className="space-y-2">
                 <dt className="font-bold">Project Description</dt>
                 <dd className={clsx('text-base-content/80 w-80 relative pr-6 whitespace-pre-wrap transition-transform duration-500', showDesc ? 'break-words h-auto' : 'truncate h-5')}>
@@ -87,7 +91,7 @@ const TheDeploy = ({ ...attrs }: TheDeployProps) => {
                     <dd className="text-base-content/80">{fromData.websiteUrl || 'NoSet'}</dd>
                   </dl>
                   <dl className="w-1/3 space-y-2">
-                    <dt className="font-bold whitespace-nowrap space-y-2">Token</dt>
+                    <dt className="font-bold whitespace-nowrap space-y-2">Anchor Token</dt>
                     <dd className="text-base-content/80">
                       <p>{launchToken?.symbol || 'NoSet'}</p>
                       {launchToken?.address !== zeroAddress && <AddressView address={launchToken?.address} showShare={true} />}
