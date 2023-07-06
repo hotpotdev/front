@@ -111,7 +111,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
       address: token.addr as `0x${string}`,
       abi: tokenAbi,
       functionName: isMint ? 'mint' : 'burn',
-      args: [account, payAmount, 0n],
+      args: [account, payAmount, minReceiveAmount],
       account,
       value: isMint ? payAmount : 0n,
     })
