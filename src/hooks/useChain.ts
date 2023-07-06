@@ -1,4 +1,4 @@
-import { Chain, useNetwork, useSwitchNetwork } from 'wagmi'
+import { Chain, useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { useEffect, useCallback, useMemo, useRef } from 'react'
@@ -34,9 +34,10 @@ const useChain = ({ }: useChainProps = {}) => {
   const chain = useChainStore((state) => state.chain) || DEFAULT_CHAIN
   const chains = SUPPORT_CHAIN
   const setChain = useChainStore((state) => state.setChain)
-  const { chain: walletChain } = useNetwork()
+  const { isConnected } = useAccount()
+  const { chain: _walletChain } = useNetwork()
   const { switchNetwork, switchNetworkAsync, isLoading, pendingChainId, error } = useSwitchNetwork()
-  const walletChainId = useMemo(() => chains?.find((item) => item.id === walletChain?.id)?.id, [chains, walletChain?.id])
+  const walletChain = useMemo(() => chains?.find((item) => item.id === _walletChain?.id), [chains, _walletChain])
   const storeChain = useMemo(() => chains?.find((item) => item.id === chain?.id), [chain?.id, chains])
   const pendingChain = useMemo(() => chains?.find((item) => item.id === pendingChainId), [pendingChainId, chains])
   const switchChain = useCallback(
@@ -48,19 +49,17 @@ const useChain = ({ }: useChainProps = {}) => {
     },
     [isVisible, setChain, switchNetworkAsync]
   )
-  const ref = useRef(true)
   useEffect(() => {
-    if (ref.current) {
-      if (walletChainId) {
-        setChain(walletChainId)
+    if (isVisible) {
+      if (walletChain && isConnected) {
+        setChain(walletChain.id)
       } else if (storeChain) {
-        if (isVisible) switchNetwork?.(storeChain.id)
+        switchNetwork?.(storeChain.id)
       } else {
         switchChain(DEFAULT_CHAIN.id)
       }
-      ref.current = false
     }
-  }, [storeChain, setChain, switchNetwork, walletChainId, switchChain, isVisible])
+  }, [storeChain, setChain, switchNetwork, walletChain, switchChain, isVisible, isConnected])
   return {
     chain,
     pendingChain,
