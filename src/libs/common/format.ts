@@ -81,8 +81,9 @@ export function FmtAmount(value: any, digits = 3, roundingFunction = Math.round,
     decimalPart = decimalPart.replace(/00*/g, '')
     zeroStr = zeroLen && zeroLen > 0 ? `0{${zeroLen}}` : '';
   }
-  decimalPart = `${decimalPart.substring(0, digits - 1)}${roundingFunction(Number(decimalPart.substring(digits - 1) || '0'))}`
-  const result = `${prefix}${integerNum}.${zeroStr}${decimalPart.substring(0, digits).replace(/0*$/, '')}${after}`.replace(/[0|\.]*$/, '')
+  decimalPart = `${decimalPart.substring(0, digits)}.${decimalPart.substring(digits)}`
+  decimalPart = `${roundingFunction(Number(decimalPart))}`.replace(/0*$/, '')
+  const result = `${prefix}${integerNum}.${zeroStr}${decimalPart}${after}`.replace(/\.$/, '')
   return result
 }
 
