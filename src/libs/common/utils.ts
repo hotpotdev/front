@@ -38,18 +38,23 @@ export const IsSubpath = (sub: string, path: string, skiproot: boolean = true): 
 
 /**
  * Converts a scientific notation number to a string, preserving its original precision.
- * @param {any} num - The scientific notation number to convert.
+ * @param {any} value - The scientific notation number to convert.
  * @returns {string} The number as a string.
  */
-export function ScientificToString(num: any): `${number}` | string {
-  if (isNaN(num) || Number(num) === 0 || Infinity === Math.abs(Number(num))) return '0'
-  const str = num.toString();
+export function ScientificToString(value: any): `${number}` | string {
+  if (isNaN(value) || Number(value) === 0 || Infinity === Math.abs(Number(value))) return '0'
+  const str = value.toString();
+  const index = str.indexOf('e-');
+  if (index !== -1) {
+    const precision = parseInt(str.slice(index + 2), 10);
+    return '0.' + '0'.repeat(precision - 1) + str.slice(0, index);
+  }
   const match = str.match(/^-?\d+(?:\.\d+)?/);
   if (match) {
     const numberString = match[0];
     const trailingZeros = numberString.match(/\.(\d*?)0*$/);
     const decimalPlaces = trailingZeros ? trailingZeros[1].length : 0;
-    return Number(num).toFixed(decimalPlaces);
+    return Number(value).toFixed(decimalPlaces);
   } else {
     return str;
   }
