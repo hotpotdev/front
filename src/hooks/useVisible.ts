@@ -1,27 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const useVisible = () => {
   const [isVisible, setVisible] = useState(true);
-  const onVisible = () => {
+  const onVisible = useCallback(() => {
     if (typeof window !== 'undefined') {
       const visible = window.document.visibilityState === 'visible';
-      if (isVisible !== visible) setVisible(isVisible);
+      if (isVisible !== visible) setVisible(visible);
     }
-  };
-  const mount = () => {
+  }, [isVisible])
+
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       window.document.addEventListener('visibilitychange', onVisible);
     }
-  };
-  const onmount = () => {
-    if (typeof window !== 'undefined') {
-      window.document.removeEventListener('visibilitychange', onVisible);
-    }
-  };
-  useEffect(() => {
-    mount();
-    return onmount();
-  });
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.document.removeEventListener('visibilitychange', onVisible);
+      }
+    };
+  }, [onVisible]);
+
   return isVisible;
 };
 

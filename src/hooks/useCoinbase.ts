@@ -1,5 +1,5 @@
 import type { OracleGateway } from '@/libs/oracle';
-import { getCoinbasePing, getCoinbasePrice } from '@/libs/oracle';
+import {  getCoinbasePing, getCoinbasePrice } from '@/libs/oracle';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from '@tanstack/react-query';
 

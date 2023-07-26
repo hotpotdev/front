@@ -3,8 +3,6 @@ import '@/styles/index.css';
 import 'nprogress/nprogress.css';
 
 import type { NextPage } from 'next';
-import type { SSRConfig } from 'next-i18next';
-import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { ReactElement } from 'react';
@@ -12,8 +10,6 @@ import { WagmiConfig } from 'wagmi';
 
 import { APP_FONT, APP_NAME } from '@/conf';
 import { Toaster } from 'react-hot-toast';
-
-import i18nextConfig from '@@/next-i18next.config';
 
 import useTheme from '@/hooks/useTheme';
 import useNProgress from '@/hooks/useNProgress';
@@ -29,11 +25,11 @@ import { queryClient } from '@/utils/queryClient';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import SettingModal from '@/views/project/components/overview/setting-modal';
 
-type NextPageWithLayout = NextPage<SSRConfig> & {
+type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => JSX.Element;
 };
 
-type AppPropsWithLayout = AppProps<SSRConfig> & {
+type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
@@ -65,4 +61,4 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   );
 };
 
-export default appWithTranslation(App, i18nextConfig);
+export default App

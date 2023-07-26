@@ -211,12 +211,19 @@ export const SUPPORT_CONNECTOR = [
       appName: APP_NAME,
     }
   }),
-  // new WalletConnectConnector({
-  //   chains: SUPPORT_CHAIN,
-  //   options: {
-  //     projectId: '44f3235b99ece427661fea5cf17dc7cc'
-  //   }
-  // })
+  new WalletConnectConnector({
+    chains: SUPPORT_CHAIN,
+    options: {
+      projectId: '18e66df92e6dcb2e8beba202599660be',
+      showQrModal: true,
+      qrModalOptions: {
+        themeVariables: {
+          // @ts-ignore
+          '--wcm-z-index': 1000,
+        }
+      }
+    }
+  })
 ];
 
 /// 钱包 metaa
@@ -231,7 +238,7 @@ export const CONNECTOR_META: {
   [SUPPORT_CONNECTOR[1].id]: {
     icon: CoinbaseIcon
   },
-  // [SUPPORT_CONNECTOR[2].id]: {
-  //   icon: WalletconnectIcon
-  // }
+  [SUPPORT_CONNECTOR[2].id]: {
+    icon: WalletconnectIcon
+  }
 };

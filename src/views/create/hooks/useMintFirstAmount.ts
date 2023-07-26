@@ -6,6 +6,9 @@ import { formatEther, parseEther } from 'viem';
 import { useChainPlatform } from '@/hooks/useChainInfo';
 import { ComputeBondingCurve } from '@/libs/sdk/utils/curve';
 import { IBondingCurveType } from '@/libs/sdk/types/curve';
+import useChain from '@/hooks/useChain';
+import { RATE_MULTIPLIER } from '@/libs/sdk/utils/format';
+import { ScientificToString } from '@/libs/common/utils';
 
 export type useMintFirstAmountProps = {
   bondingCurveType: IBondingCurveType,
@@ -28,24 +31,27 @@ export const useMintFirstAmount = ({
   const { params } = useMemo(() => ComputeBondingCurve({ type: bondingCurveType, supplyExpect, priceExpect, initPrice }), [bondingCurveType, initPrice, priceExpect, supplyExpect])
   const mintValue = useMemo(() => {
     if (mintAmount !== undefined && !isNaN(mintAmount)) {
-      return parseEther(mintAmount.toString())
+      return parseEther(ScientificToString(mintAmount))
     }
     return 0n;
   }, [mintAmount])
   const { data } = useChainPlatform()
   const bondingCurve = useMemo(() => data?.bondingCurve, [data])
+  const { chain } = useChain()
   const { data: payAmount, ...result } = useCalculateBurnAmount({
+    chainId: chain.id,
     type: bondingCurveType,
     params,
     mintValue,
     contractAddress: bondingCurve?.[bondingCurveType],
   })
   const payValue = useMemo(() => {
-    if (payAmount && !isNaN(mintTaxRate)) {
-      return Number(formatEther(payAmount)) / (1 - mintTaxRate / 100 - 0.008)
+
+    if (payAmount && !isNaN(mintTaxRate) && !isNaN(Number(data?.mintTax))) {
+      return Number(formatEther(payAmount)) / (1 - mintTaxRate / 100 - (Number(data?.mintTax) / RATE_MULTIPLIER))
     }
     return 0
-  }, [mintTaxRate, payAmount])
+  }, [data?.mintTax, mintTaxRate, payAmount])
   return {
     ...result,
     payAmount,

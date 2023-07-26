@@ -2,8 +2,8 @@ import useChain from '@/hooks/useChain';
 import { useWalletStore } from '@/store/useWalletStore';
 import { ArrowLeftOnRectangleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { useEffect, useMemo, useState } from 'react';
-import { useAccount, useDisconnect, useNetwork, useSwitchNetwork } from 'wagmi';
+import { useEffect, useMemo } from 'react';
+import { useAccount, useDisconnect, useNetwork } from 'wagmi';
 import customToast from '@/utils/customToast';
 import Chain from '@/components/switch-chain/chain';
 
@@ -19,10 +19,12 @@ const SwitchChainModal = ({ ...attrs }: SwitchChainModalProps) => {
   const { chains, switchChain, isLoading, pendingChain, error } = useChain()
   const { disconnect } = useDisconnect()
   const unsupported = useMemo(() => chains.find(item => item.id === walletChain?.id) === undefined, [walletChain?.id, chains])
+
   useEffect(() => {
     if (isConnected) setIsChainModalOpen(unsupported) // 让用户切换网络
     else setIsChainModalOpen(false)
   }, [isConnected, setIsChainModalOpen, unsupported])
+
   const close = () => {
     if (!unsupported) {
       setIsChainModalOpen(false)
@@ -72,8 +74,8 @@ const SwitchChainModal = ({ ...attrs }: SwitchChainModalProps) => {
               disabled={isLoading}
               onClick={() => disconnect()}
             >
-              <ArrowLeftOnRectangleIcon className="w-5 h-5" />
               {isLoading && <span className="loading loading-spinner loading-xs"></span>}
+              <ArrowLeftOnRectangleIcon className="w-5 h-5" />
               <span>Disconnect</span>
             </button>
           </footer>

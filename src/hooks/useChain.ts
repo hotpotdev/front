@@ -1,7 +1,7 @@
 import { Chain, useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { useEffect, useCallback, useMemo, useRef } from 'react'
+import { useEffect, useCallback, useMemo } from 'react'
 
 import { DEFAULT_CHAIN, SUPPORT_CHAIN } from '@/conf'
 import useVisible from './useVisible'

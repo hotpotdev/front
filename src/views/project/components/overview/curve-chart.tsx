@@ -1,7 +1,7 @@
 import NumberView from '@/components/format-view/number-view';
 import { FmtAmount } from '@/libs/common/format';
 import clsx from 'clsx';
-import {  ResponsiveContainer, Tooltip, XAxis, YAxis, AreaChart, Area, Brush } from 'recharts';
+import { ResponsiveContainer, Tooltip, XAxis, YAxis, AreaChart, Area, Brush } from 'recharts';
 
 
 import type { Margin } from 'recharts/types/util/types';
@@ -29,7 +29,7 @@ const CurveChart = ({ margin = {
   const { chartData } = useBondingCurveChart({
     type: bondingCurveType,
     params: params,
-    maxX: Math.max(supplyExpect,1e14),
+    maxX: Math.max(supplyExpect, 21_000_000),
     count: 300,
   });
   const id = `ProjectBondingCurveChart${new Date().getTime()}`
@@ -62,33 +62,19 @@ const CurveChart = ({ margin = {
           <Tooltip
             content={props => {
               return (
-                <div className="rounded bg-base-200 p-4 shadow text-xs">
-                  <div className="space-x-1 flex">
+                <div className="rounded bg-base-200 p-4 shadow">
+                  <div className="space-x-1 flex items-center">
                     <span>Supply:</span>
-                    <NumberView number={props.label} />
+                    <span>{FmtAmount(props?.label)}</span>
                   </div>
-                  <div className="space-x-1">
+                  <div className="space-x-1 flex items-center">
                     <span>Price:</span>
-                    <span>
-                      {FmtAmount(
-                        ((props.payload ?? []).length > 0 ? props.payload! : [{ value: 0 }])[0].value,
-                        6
-                      )}
-                    </span>
+                    <span>{FmtAmount(props.payload?.[0]?.value, 6)}</span>
                   </div>
                 </div>
               );
             }}
           />
-          {/* <Line
-            key={`BondingCurveChart`}
-            type="monotone"
-            dataKey={'price'}
-            stroke={'#7950DD'}
-            strokeWidth={2}
-            dot={{ r: 0 }}
-            activeDot={{ r: 6 }}
-          /> */}
           <defs>
             <linearGradient id={id} gradientTransform="rotate(90)">
               <stop offset="0%" stopColor="rgba(121,80,221,0.8)" />
@@ -97,10 +83,10 @@ const CurveChart = ({ margin = {
             </linearGradient>
           </defs>
           <Area key={`BondingCurveChart`} type="monotone" dataKey={'price'} strokeWidth={2} stroke="#7950DD" fill={`url(#${id})`} />
-          <Brush dataKey={'supply'}
+          <Brush
+            dataKey={'supply'}
             tickFormatter={(value) => FmtAmount(value)}
             height={30}
-            y={220}
             stroke='rgba(121,80,221,0.5)'
             travellerWidth={10}
           />

@@ -132,6 +132,7 @@ const Transactions = ({ token, ...attrs }: TransactionsProps) => {
             mintBurns?.map((mintBurn, index) => {
               const createTime = format(new Date(Number(mintBurn.timestamp) * 1e3), 'MM/dd/yyyy HH:mm:ss')
               const chainId = NetToChainId(mintBurn.token.net)
+              const amount = Number(mintBurn.nativeAmount) + Number(mintBurn.projectFee) + Number(mintBurn.platformFee)
               return (
                 <tr key={`token-list-item-${mintBurn.id}`}
                   className="hover:bg-base-200 cursor-pointer"
@@ -142,7 +143,7 @@ const Transactions = ({ token, ...attrs }: TransactionsProps) => {
                   </td>
                   <td >
                     <div className="flex items-end space-x-1">
-                      <NumberView number={mintBurn.nativeAmount} />
+                      <NumberView number={amount} />
                       <span className="text-xs text-base-content/60">{tokenLaunchToken?.symbol}</span>
                     </div>
                   </td>

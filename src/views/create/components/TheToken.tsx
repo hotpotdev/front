@@ -17,15 +17,14 @@ import { IFormData } from '../type';
 import ChainAvatar from '@/components/avatar/chain-avatar';
 import type { IBondingCurveType } from '@/libs/sdk/types/curve';
 import { XCircleIcon } from '@heroicons/react/24/outline';
-
+import { StopScrollFun } from '@/utils';
+import { InputStringNumberWithCommas, InputStringToStringNumber } from '@/libs/common/utils';
 
 type TheTokenProps = React.HTMLAttributes<HTMLElement> & {
 
 }
 const TheToken = ({ ...attrs }: TheTokenProps) => {
   const expMinPrice = 0.001;
-  const priceStep = 0.01;
-  const chainCertTokens = useChainCertTokens()
   const { setValue, register, formState: { errors }, watch, resetField, trigger } = useFormContext<IFormData>();
   const [tokenType, isSbt, bondingCurveType, raisingToken, supplyExpect = 0, priceExpect = 0, initPrice = 0] = watch([
     'tokenType',
@@ -36,6 +35,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
     'priceExpect',
     'initPrice'
   ]);
+
   const [isFocus, setIsFocus] = useState(false)
   const [rangeInitPrice, setRangeInitPrice] = useState(initPrice)
   const { data: chianPrice = 1 } = useChainCryptocomparePrice()
@@ -52,9 +52,13 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
 
   useEffect(() => {
     if (isFocus) {
-      setRangeInitPrice(initPrice || 0)
+      setRangeInitPrice(initPrice ?? 0)
     }
   }, [initPrice, isFocus])
+
+  const priceStep = useMemo(() => {
+    return Math.min(priceExpect / 10)
+  }, [priceExpect]);
 
   const minInitPrice = useMemo(() => bondingCurveType === 'exponential' ? expMinPrice : 0, [bondingCurveType])
   const maxInitPrice = useMemo(() => priceExpect - (bondingCurveType === 'exponential' ? expMinPrice : 0), [bondingCurveType, priceExpect])
@@ -93,10 +97,17 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
                 required: { value: true, message: 'Please set supply expect' },
                 min: { value: 1000, message: 'Please set token supply between 1,000 - 99,999,999,999,999' },
                 max: { value: 99999999999999, message: 'Please set token supply between 1,000 - 99,999,999,999,999' },
-                valueAsNumber: true
+                setValueAs: v => v ? Number(InputStringToStringNumber(v.toString().replace(/^(00)+/g, ''), 18)) : v,
+                onChange(e) {
+                  const val = e.target.value.replaceAll(',', '').replace(/^(00)+/g, '');
+                  const strNum = InputStringToStringNumber(val, 18);
+                  const viewNum = InputStringNumberWithCommas(strNum, 18);
+                  e.currentTarget.value = viewNum
+                }
               })}
+              defaultValue={'21,000,000'}
+              type="text"
               id="expect-token-supply"
-              type="number"
               className={clsx(
                 'input input-bordered w-full',
                 errors.supplyExpect && 'input-error'
@@ -104,7 +115,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
               placeholder="1,000-99,999,999,999,999"
             />
             {
-              Boolean(supplyExpect && supplyExpect.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30" onClick={() => {
+              Boolean(supplyExpect && supplyExpect.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                 setValue('supplyExpect', undefined)
                 trigger('supplyExpect')
               }}>
@@ -133,10 +144,16 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
                   required: { value: true, message: 'Please set price expect' },
                   min: { value: 0, message: 'Please set price expect 0 at least' },
                   max: { value: 99999999999999, message: 'Please set price expect 99999999999999 at most' },
-                  valueAsNumber: true
+                  setValueAs: v => v ? Number(InputStringToStringNumber(v.toString().replace(/^(00)+/g, ''), 18)) : v,
+                  onChange(e) {
+                    const val = e.target.value.replaceAll(',', '').replace(/^(00)+/g, '');
+                    const strNum = InputStringToStringNumber(val, 18);
+                    const viewNum = InputStringNumberWithCommas(strNum, 18);
+                    e.currentTarget.value = viewNum
+                  },
                 })}
+                type='text'
                 id="expect-token-price"
-                type="number"
                 className={clsx(
                   'input input-bordered w-full pr-20',
                   errors.priceExpect && 'border-error ring ring-error ring-opacity-50'
@@ -145,7 +162,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
               />
               <div className="absolute inset-y-0 right-0 flex py-2 pr-2 space-x-2">
                 {
-                  Boolean(priceExpect && priceExpect.toString().length > 0) && <button className="text-base-content/30" onClick={() => {
+                  Boolean(priceExpect && priceExpect.toString().length > 0) && <button className="text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                     setValue('priceExpect', undefined)
                     trigger('priceExpect')
                   }}>
@@ -164,7 +181,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
               <NumberView number={priceExpect * price} before="~$" />
             </div>
           </div>
-          <div className="w-1/4">
+          {/* <div className="w-1/4">
             <div className="flex justify-between">
               <label htmlFor="launch-token" className="flex text-sm font-bold md:text-base">
                 Anchor Token
@@ -179,7 +196,6 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
               >
                 <ChainAvatar size={16} />
                 <span>{raisingToken.symbol}</span>
-                {/* <CertificationToken /> */}
                 {
                   chainCertTokens?.length > 1 && <DownArrowIcon className="w-4 h-4" />
                 }
@@ -202,108 +218,100 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
               </ul>
             </div>
             <p className="mt-1 text-sm text-accent"></p>
-          </div>
-          <div className="w-1/4 space-y-2">
-            <h4 className="text-sm font-bold">MarketCap</h4>
-            <div className="whitespace-pre-wrap break-words uppercase">
+          </div> */}
+          <div className="w-1/2 space-y-2">
+            <h4 className="text-sm font-bold">FDV</h4>
+            <div className="whitespace-pre-wrap break-words uppercase flex">
               <NumberView number={tvl * price} before="~$" />
             </div>
           </div>
         </div>
-        {bondingCurveType !== 'squareroot' && (
-          <div className="flex w-full justify-between space-y-2 md:space-x-4 md:space-y-0">
-            <div className="w-full">
-              <div className="flex justify-between">
-                <label htmlFor="initial-token-price" className="block text-sm font-bold md:text-base">
-                  Initial Token Price
-                </label>
-                <span className="text-sm text-accent" id="email-optional"></span>
-              </div>
-              <div className="relative mt-1">
-                <input
-                  {...register('initPrice', {
-                    required: {
-                      value: true,
-                      message: 'Please set init price address'
-                    },
-                    min: { value: minInitPrice, message: '' },
-                    max: { value: maxInitPrice, message: '' },
-                    valueAsNumber: true,
-                    onChange(e) {
-                      let value = e.currentTarget?.value
-                      if (Number(e.currentTarget?.value || 0) > maxInitPrice) {
-                        value = maxInitPrice
-                      }
-                      setValue('initPrice', value || 0)
-                    },
-                  })}
-                  onFocus={() => setIsFocus(true)}
-                  onBlur={() => setIsFocus(false)}
-                  id="initial-token-price"
-                  type="number"
-                  min={minInitPrice}
-                  max={maxInitPrice}
-                  className={clsx(
-                    'input input-bordered w-full pr-20',
-                    initPrice < 0 && 'input-error'
-                  )}
-                  placeholder={
-                    minInitPrice + '-' + maxInitPrice
+        <div className={clsx('w-full justify-between space-y-2 md:space-x-4 md:space-y-0', bondingCurveType !== 'squareroot' ? 'flex' : 'hidden')}>
+          <div className="w-full">
+            <div className="flex justify-between">
+              <label htmlFor="initial-token-price" className="block text-sm font-bold md:text-base">
+                Initial Token Price
+              </label>
+              <span className="text-sm text-accent" id="email-optional"></span>
+            </div>
+            <div className="relative mt-1">
+              <input
+                {...register('initPrice', {
+                  required: {
+                    value: true,
+                    message: 'Please set init price address'
+                  },
+                  min: { value: minInitPrice, message: '' },
+                  max: { value: maxInitPrice, message: '' },
+                  setValueAs: v => v ? Number(InputStringToStringNumber(v.toString().replace(/^(00)+/g, ''), 18)) : v,
+                  onChange(e) {
+                    let val = e.target.value.replaceAll(',', '').replace(/^(00)+/g, '');
+                    if (Number(val) > maxInitPrice) {
+                      val = maxInitPrice.toString()
+                    }
+                    const strNum = InputStringToStringNumber(val, 18);
+                    const viewNum = InputStringNumberWithCommas(strNum, 18);
+                    e.currentTarget.value = viewNum
                   }
-                />
-                <div className="absolute inset-y-0 right-0 flex py-2 pr-2">
-                  {
-                    Boolean(initPrice && initPrice.toString().length > 0) && <button className="text-base-content/30" onClick={() => {
-                      setValue('initPrice', undefined)
-                      trigger('initPrice')
-                    }}>
-                      <XCircleIcon className="w-6 h-6" />
-                    </button>
-                  }
-                  <div className="flex items-center justify-between space-x-1 rounded-lg border px-2 py-1 text-center text-sm font-bold">
-                    <ChainAvatar size={16} />
-                    <span>{raisingToken.symbol}</span>
-                    {/* <CertificationToken /> */}
-                  </div>
+                })}
+                onFocus={() => setIsFocus(true)}
+                onBlur={() => setIsFocus(false)}
+                id="initial-token-price"
+                type="text"
+                min={minInitPrice}
+                max={maxInitPrice}
+                onWheel={StopScrollFun}
+                className={clsx(
+                  'input input-bordered w-full pr-20',
+                  initPrice < 0 && 'input-error'
+                )}
+                placeholder={
+                  minInitPrice + '-' + maxInitPrice
+                }
+              />
+              <div className="absolute inset-y-0 right-0 flex py-2 pr-2">
+                {
+                  Boolean(initPrice && initPrice.toString().length > 0) && <button className="text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
+                    setValue('initPrice', undefined)
+                    trigger('initPrice')
+                  }}>
+                    <XCircleIcon className="w-6 h-6" />
+                  </button>
+                }
+                <div className="flex items-center justify-between space-x-1 rounded-lg border px-2 py-1 text-center text-sm font-bold">
+                  <ChainAvatar size={16} />
+                  <span>{raisingToken.symbol}</span>
+                  {/* <CertificationToken /> */}
                 </div>
               </div>
-              <div className="mt-1 text-sm uppercase text-accent">
-                <NumberView number={initPrice * price} before="~$" />
-              </div>
             </div>
-            <div className="flex w-full flex-col items-center justify-center overflow-hidden">
-              <input
-                // {...register('initPrice', {
-                //   required: {
-                //     value: true,
-                //     message: 'Please set init price address'
-                //   },
-                //   min: { value: bondingCurveType === 'exponential' ? expMinPrice : 0, message: '' },
-                //   max: { value: priceExpect - (bondingCurveType === 'exponential' ? expMinPrice : 0), message: '' },
-                //   valueAsNumber: true,
-                // })}
-                type="range"
-                value={rangeInitPrice}
-                max={maxInitPrice}
-                min={minInitPrice}
-                step={priceStep}
-                onChange={(e) => {
-                  let value = Number(e.currentTarget?.value || 0)
-                  if (value > maxInitPrice) {
-                    value = maxInitPrice
-                  }
-                  setRangeInitPrice(value)
-                  setValue('initPrice', value)
-                }}
-                className="w-full cursor-pointer"
-              />
-              <p className="flex w-full justify-between text-accent">
-                <span>{bondingCurveType === 'exponential' ? expMinPrice : 0}</span>
-                <span>{priceExpect}</span>
-              </p>
+            <div className="mt-1 text-sm uppercase text-accent">
+              <NumberView number={initPrice * price} before="~$" />
             </div>
           </div>
-        )}
+          <div className="flex w-full flex-col items-center justify-center overflow-hidden">
+            <input
+              type="range"
+              value={rangeInitPrice}
+              max={maxInitPrice}
+              min={minInitPrice}
+              step={priceStep}
+              onChange={(e) => {
+                let value = Number(e.currentTarget?.value ?? 0)
+                if (value > maxInitPrice) {
+                  value = maxInitPrice
+                }
+                setRangeInitPrice(value)
+                setValue('initPrice', value)
+              }}
+              className="w-full cursor-pointer"
+            />
+            <p className="flex w-full justify-between text-accent">
+              <span>{bondingCurveType === 'exponential' ? expMinPrice : 0}</span>
+              <span>{priceExpect}</span>
+            </p>
+          </div>
+        </div>
         <div className="space-y-4 md:space-y-6">
           <h4 className="font-bold text-sm md:text-base">Curve Setting</h4>
           <PillTab

@@ -23,7 +23,7 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
     watch,
     resetField,
   } = useFormContext<IFormData>();
-  const { address: account, isConnected, isDisconnected } = useAccount()
+  const { address: account, isDisconnected } = useAccount()
   const [name, symbol, description, websiteUrl, twitterUrl, discordUrl, telegramUrl, ownerAddress] = watch([
     'name', 'symbol', 'description',
     'websiteUrl',
@@ -37,7 +37,8 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
     nameMaxLength = 24,
     symbolMinLength = 2,
     symbolMaxLength = 8;
-  const { random } = useRandomInfo();
+
+  // const { random } = useRandomInfo();
 
   const onChangeImage = useCallback((file?: File, fileData?: string) => {
     setValue('logoFile', file);
@@ -88,7 +89,7 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
               placeholder={`${nameMinLength}-${nameMaxLength} Characters`}
             />
 
-            <div className="absolute inset-y-0 right-0 flex items-center justify-center pr-4 space-x-1">
+            <div className="absolute inset-y-0 top-1 bottom-1 right-1 flex items-center justify-center pr-4 space-x-1 bg-base-100 rounded-r-full">
               {
                 Boolean(name && name.toString().length > 0) && <button className="text-base-content/30" onClick={() => {
                   resetField('name')
@@ -97,24 +98,24 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
                   <XCircleIcon className="w-6 h-6" />
                 </button>
               }
-              <button
+              {/* <button
                 type="button"
                 onClick={() => random()}
                 className="btn btn-outline btn-xs bg-base-100 h-8 opacity-80"
               >
                 <RandomIcon className="w-4 h-4 fill-current" />
                 <span>Random</span>
-              </button>
+              </button> */}
             </div>
           </div>
           <p className="mt-1 text-sm text-error">{errors.name?.message}</p>
-          <p className="mt-1 text-sm text-accent">It’s a on-chain action,can not be modify after launch</p>
+          <p className="mt-1 text-sm text-accent">eg.peopleDAO</p>
         </div>
         {/*  */}
         <div className="w-full space-y-4">
           <div className="flex justify-between">
             <label htmlFor="project-symbol" className="flex text-sm font-bold md:text-base">
-              Ticker
+              Token Symbol
               <span>*</span>
             </label>
             <span className="text-sm text-accent"></span>
@@ -122,7 +123,7 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
           <div className="w-full relative">
             <input
               {...register('symbol', {
-                required: { value: true, message: 'Please input ticker' },
+                required: { value: true, message: 'Please input token symbol' },
                 minLength: { value: symbolMinLength, message: `${symbolMinLength} character(s) at least` },
                 maxLength: { value: symbolMaxLength, message: `${symbolMaxLength} character(s) at most` },
                 pattern: { value: /^[A-Z]+$/, message: 'only upper case characters' },
@@ -142,7 +143,7 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
               placeholder="2-8 Characters"
             />
             {
-              Boolean(symbol && symbol.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30" onClick={() => {
+              Boolean(symbol && symbol.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                 resetField('symbol')
                 trigger('symbol')
               }}>
@@ -150,7 +151,7 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
               </button>
             }
             <p className="mt-1 text-sm text-error">{errors.symbol?.message}</p>
-            <p className="mt-1 text-sm text-accent"></p>
+            <p className="mt-1 text-sm text-accent">eg.people</p>
           </div>
         </div>
         {/*  */}
@@ -181,7 +182,7 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
               placeholder="What’s going to happen?"
             />
             {
-              Boolean(description && description.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30" onClick={() => {
+              Boolean(description && description.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                 resetField('description')
                 trigger('description')
               }}>
@@ -189,7 +190,7 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
               </button>
             }
             <p className="mt-1 text-sm text-error">{errors.description?.message}</p>
-            <p className="mt-1 text-sm text-accent">{128 - (description?.toString().length || 0)} Characters Maximum</p>
+            <p className="mt-1 text-sm text-accent">{128 - (description?.toString().length ?? 0)} Characters Maximum</p>
           </div>
         </div>
         {/*  */}
@@ -232,12 +233,12 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
                     type="text"
                     className={clsx(
                       'input input-bordered w-full',
-                      errors.name && 'input-error'
+                      errors.websiteUrl && 'input-error'
                     )}
                     placeholder={`http[s]://xxxxx.xxx`}
                   />
                   {
-                    Boolean(websiteUrl && websiteUrl.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30" onClick={() => {
+                    Boolean(websiteUrl && websiteUrl.toString().length > 0) && <button className="absolute top-3 right-3 text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                       resetField('websiteUrl')
                       trigger('websiteUrl')
                     }}>
@@ -265,12 +266,12 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
                     type="text"
                     className={clsx(
                       'input input-bordered w-full',
-                      errors.name && 'input-error'
+                      errors.twitterUrl && 'input-error'
                     )}
                     placeholder={`https://twitter.com/xxxx`}
                   />
                   {
-                    Boolean(twitterUrl && twitterUrl.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30" onClick={() => {
+                    Boolean(twitterUrl && twitterUrl.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                       resetField('twitterUrl')
                       trigger('twitterUrl')
                     }}>
@@ -300,12 +301,12 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
                     type="text"
                     className={clsx(
                       'input input-bordered w-full',
-                      errors.name && 'input-error'
+                      errors.discordUrl && 'input-error'
                     )}
                     placeholder="https://discord.xxx/xxxx"
                   />
                   {
-                    Boolean(discordUrl && discordUrl.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30" onClick={() => {
+                    Boolean(discordUrl && discordUrl.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                       resetField('discordUrl')
                       trigger('discordUrl')
                     }}>
@@ -333,12 +334,12 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
                     type="text"
                     className={clsx(
                       'input input-bordered w-full',
-                      errors.name && 'input-error'
+                      errors.telegramUrl && 'input-error'
                     )}
                     placeholder="https://t.me/xxxx"
                   />
                   {
-                    Boolean(telegramUrl && telegramUrl.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30" onClick={() => {
+                    Boolean(telegramUrl && telegramUrl.toString().length > 0) && <button className=" absolute top-3 right-3 text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                       resetField('telegramUrl')
                       trigger('telegramUrl')
                     }}>
@@ -384,7 +385,7 @@ const TheDetails = ({ ...attrs }: TheDetailsProps) => {
 
               <div className="absolute inset-y-0 right-0 flex items-center pr-1.5 space-x-2">
                 {
-                  Boolean(ownerAddress && ownerAddress.toString().length > 0) && <button className="text-base-content/30" onClick={() => {
+                  Boolean(ownerAddress && ownerAddress.toString().length > 0) && <button className="text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                     resetField('ownerAddress')
                     trigger('ownerAddress')
                   }}>

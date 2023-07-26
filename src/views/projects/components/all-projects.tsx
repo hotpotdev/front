@@ -73,9 +73,8 @@ const AllProject = ({ ...attrs }: AllProjectProps) => {
     if (!tokens) await refetch()
   }
   const { push } = useRouter()
-  const { locale } = useLocale()
   const onClickProject = async (index: number) => {
-    await push(`/${locale}/project?id=${index}`)
+    await push(`/project?id=${index}`)
   }
 
   const { watch } = useFormContext();

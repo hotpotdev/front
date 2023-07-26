@@ -19,11 +19,13 @@ import { ComputeBondingCurve, EncodeLaunchData } from '@/libs/sdk/utils/curve';
 import { ILaunchParam } from '@/libs/sdk/types/curve';
 import { getContract, writeContract, waitForTransaction } from 'wagmi/actions'
 import { UpLoadString, UploadFile } from '@/utils/ipfs';
-import { IHotpot_Metadata } from '@/libs/types/metadata';
+
 import { factoryAbi } from '@/libs/sdk/contracts/Factory';
 import { LAYOUT_ID } from '@/conf';
 import { useRouter } from 'next/router';
-import useLocale from '@/hooks/useLocale';
+
+import { IHotpot_Metadata } from '@/libs/types/metadata';
+import useChain from '@/hooks/useChain';
 
 export enum CreateAction {
   Details,
@@ -38,7 +40,7 @@ type CreateViewProps = React.HTMLAttributes<HTMLElement> & {
 
 const CreateView = ({ ...attrs }: CreateViewProps) => {
   const router = useRouter()
-  const { locale } = useLocale()
+  const { chain } = useChain()
   const { isConnected, address: account } = useAccount();
   const chanCertToken = useChainCertToken()
   const [stepIndex, setStepIndex] = useState<CreateAction>(CreateAction.Details)
@@ -59,7 +61,8 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
       tokenType: 'ERC20',
       isSbt: false,
       bondingCurveType: 'linear',
-      supplyExpect: 21000000,
+      //@ts-ignore
+      supplyExpect: '21,000,000', // TODO type
       priceExpect: 1,
       raisingToken: chanCertToken,
       initPrice: 0.001,
@@ -97,6 +100,9 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
   }, [account, chanCertToken, isConnected, ownerAddress, raisingToken, setValue, stepIndex, treasuryAddress]);
 
 
+  useEffect(() => {
+    trigger()
+  }, [trigger])
 
   const changeStep = (index: number) => {
     switch (index) {
@@ -132,7 +138,7 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
   })
   const { params } = useMemo(() => ComputeBondingCurve({ type: bondingCurveType, supplyExpect, priceExpect, initPrice }), [bondingCurveType, initPrice, priceExpect, supplyExpect])
   const { data: platform } = useChainPlatform()
-  const { data: walletClient } = useWalletClient();
+  const { data: walletClient } = useWalletClient({ chainId: chain.id });
   const factoryAddress = useMemo(() => platform?.addr, [platform])
 
   const [isDeployLoading, setIsDeployLoading] = useState(false)
@@ -216,7 +222,7 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
         payAmount: payAmount ?? 0n,
       } as ILaunchParam)
       try {
-        const hash = await factoryContract.write.deployToken([calldata, value],{ value: payAmount })
+        const hash = await factoryContract.write.deployToken([calldata, value], { value })
         await waitForTransaction({ hash })
       } catch (error) {
         return Promise.reject(error)
@@ -282,7 +288,7 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
         )
       }
       if (isSuccess) {
-        router.push(`/${locale}/projects`)
+        router.push(`/projects`)
       }
     } catch (error) {
       console.error(error)
@@ -304,30 +310,30 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
         }
       </ul>
       <FormProvider {...methods}>
-        <div className="w-full md:px-16 overflow-x-hidden">
+        <div className="w-full md:px-16">
           <TheDetails className={clsx(
             'transition-transform duration-500',
             stepIndex === 0
               ? 'h-auto w-auto translate-x-0 opacity-100'
-              : 'h-0 w-0 translate-x-full overflow-hidden opacity-0'
+              : 'h-0 w-0 translate-x-[10rem] overflow-hidden opacity-0'
           )} />
           <TheToken className={clsx(
             'transition-transform duration-500',
             stepIndex === 1
               ? 'h-auto w-auto translate-x-0 opacity-100'
-              : 'h-0 w-0 translate-x-full overflow-hidden opacity-0'
+              : 'h-0 w-0  translate-x-[10rem] overflow-hidden opacity-0'
           )} />
           <TheSetting className={clsx(
             'transition-transform duration-500',
             stepIndex === 2
               ? 'h-auto w-auto translate-x-0 opacity-100'
-              : 'h-0 w-0 translate-x-full overflow-hidden opacity-0'
+              : 'h-0 w-0  translate-x-[10rem] overflow-hidden opacity-0'
           )} />
           <TheDeploy className={clsx(
             'transition-transform duration-500',
             stepIndex === 3
               ? 'h-auto w-auto translate-x-0 opacity-100'
-              : 'h-0 w-0 translate-x-full overflow-hidden opacity-0'
+              : 'h-0 w-0  translate-x-[10rem] overflow-hidden opacity-0'
           )} />
         </div>
         {/*  */}

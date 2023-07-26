@@ -1,7 +1,7 @@
 import NumberView from '@/components/format-view/number-view';
 import { FmtAmount } from '@/libs/common/format';
 import clsx from 'clsx';
-import { ResponsiveContainer, Tooltip, XAxis, YAxis, Area, AreaChart } from 'recharts';
+import { ResponsiveContainer, Tooltip, XAxis, YAxis, Area, AreaChart,Brush } from 'recharts';
 import { useBondingCurveChart } from '../../../libs/sdk/hooks/useBondingCurve';
 import { useFormContext } from 'react-hook-form';
 
@@ -18,15 +18,16 @@ type TheChartProps = React.HTMLAttributes<HTMLElement> & {
 const TheChart = ({ margin = {
   top: 10,
   right: 10,
-  left: 10,
+  left: 30,
   bottom: 10
 }, ...attrs }: TheChartProps) => {
   const { watch } = useFormContext<IFormData>();
-  const [bondingCurveType, supplyExpect = 0, priceExpect = 0, initPrice = 0] = watch([
+  const [bondingCurveType, supplyExpect = 0, priceExpect = 0, initPrice = 0,raisingToken] = watch([
     'bondingCurveType',
     'supplyExpect',
     'priceExpect',
-    'initPrice'
+    'initPrice',
+    'raisingToken'
   ]);
   const {params} = useMemo(() => ComputeBondingCurve({ type: bondingCurveType, supplyExpect, priceExpect, initPrice }), [bondingCurveType, initPrice, priceExpect, supplyExpect])
   const { chartData } = useBondingCurveChart({
@@ -64,32 +65,20 @@ const TheChart = ({ margin = {
             content={props => {
               return (
                 <div className="rounded bg-base-200 p-4 shadow">
-                  <div className="space-x-1 flex">
+                  <div className="space-x-1 flex items-center">
                     <span>Supply:</span>
-                    <NumberView number={props.label} />
+                    <span>{FmtAmount(props?.label)}</span>
+                    <span>{raisingToken.symbol}</span>
                   </div>
-                  <div className="space-x-1">
+                  <div className="space-x-1 flex items-center">
                     <span>Price:</span>
-                    <span>
-                      {FmtAmount(
-                        ((props.payload ?? []).length > 0 ? props.payload! : [{ value: 0 }])[0].value,
-                        6
-                      )}
-                    </span>
+                    <span>{FmtAmount(props.payload?.[0]?.value,6)}</span>
+                    <span>{raisingToken.symbol}</span>
                   </div>
                 </div>
               );
             }}
           />
-          {/* <Line
-            key={`BondingCurveChart`}
-            type="monotone"
-            dataKey={'price'}
-            stroke={'#7950DD'}
-            strokeWidth={2}
-            dot={{ r: 0 }}
-            activeDot={{ r: 6 }}
-          /> */}
           <defs>
             <linearGradient id={id} gradientTransform="rotate(90)">
               <stop offset="0%" stopColor="rgba(121,80,221,0.8)" />
@@ -97,7 +86,13 @@ const TheChart = ({ margin = {
               <stop offset="100%" stopColor="rgba(121,80,221,0.1)" />
             </linearGradient>
           </defs>
-          <Area key={`BondingCurveChart`} type="monotone" dataKey={'price'} strokeWidth={2} stroke="#7950DD" fill={`url(#${id})`} />
+          <Area key={`BondingCurveChart`} type="monotone" dataKey={'price'} strokeWidth={2} stroke="#6D47EF" fill={`url(#${id})`} />
+          <Brush dataKey={'supply'}
+            tickFormatter={(value) => FmtAmount(value)}
+            height={30}
+            stroke='rgba(121,80,221,0.5)'
+            travellerWidth={10}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>

@@ -16,12 +16,8 @@ import { GenerateGradientSVG, SVG2Base64 } from '@/libs/common/svg';
 import { FormatToken } from '@/libs/sdk/utils/format';
 import { useCoingeckoPrice } from '@/hooks/useCoingecko';
 import NumberView from '@/components/format-view/number-view';
-import { useBalance } from 'wagmi';
-import { zeroAddress } from 'viem';
 import { useAllCounterWhere } from '@/hooks/useChainInfo';
 import { ICounter } from '@/libs/sdk/hooks/useCounter';
-import { MintBurnEntity_OrderBy, OrderDirection } from '@/libs/sdk/types/graphql';
-
 
 type TheOverviewProps = React.HTMLAttributes<HTMLElement> & {
   token: IToken
@@ -61,54 +57,47 @@ const TheOverview = ({ token, ...attrs }: TheOverviewProps) => {
     from: tokenLaunchPriceSymbol?.coingecko
   })
 
-  const { data: treasuryBalance } = useBalance({
-    address: viewToken.treasury as `0x${string}`,
-    token: viewToken.raisingToken === zeroAddress ? undefined : tokenLaunchToken?.address,
-  })
-
   const [intervalType, setIntervalType] = useState<'hour' | 'day'>('day')
   const [interval, setInterval] = useState(7)
 
   return (
-    <div {...attrs} className={clsx('space-y-6', attrs.className)}>
-      <div className="flex justify-between mt-4 space-x-8">
-        <div className="w-full max-w-sm space-y-8 mt-8">
+    <div {...attrs} className={clsx('space-y-8', attrs.className)}>
+      <div className="flex justify-between mt-8 space-x-8">
+        <div className="w-full max-w-sm space-y-8">
           <div className="space-y-4">
             <div className="flex justify-between">
               <div className="space-x-1 flex items-center">
                 <span>Total Volume</span>
-                <span className="tooltip cursor-pointer" data-tip="">
+                {/* <span className="tooltip cursor-pointer" data-tip="">
                   <QuestionMarkCircleIcon className="w-5 h-5" />
-                </span>
+                </span> */}
               </div>
               <div className="flex items-end space-x-1">
                 <NumberView number={tradeVolumeAmount * price} before='~$' />
-                {/* <span className="text-xs text-base-content/60">{tokenLaunchToken?.symbol}</span> */}
               </div>
             </div>
             <div className="flex justify-between">
               <div className="space-x-1 flex items-center">
-                <span>Total Valued Locked</span>
-                <span className="tooltip cursor-pointer" data-tip="">
+                <span>Total Value Locked</span>
+                {/* <span className="tooltip cursor-pointer" data-tip="">
                   <QuestionMarkCircleIcon className="w-5 h-5" />
-                </span>
+                </span> */}
               </div>
               <div className="flex items-end space-x-1">
                 <NumberView number={viewToken.lockValue * price} before='~$' />
-                {/* <span className="text-xs text-base-content/60">{tokenLaunchToken?.symbol}</span> */}
               </div>
             </div>
             <div className="flex justify-between">
-              <span>Treasury Balance</span>
+              <span>Treasury Fee</span>
               <div className="flex items-end space-x-1">
-                <NumberView number={Number(treasuryBalance?.formatted || 0) * price} before='~$' />
+                <NumberView number={viewToken.treasuryFee * price} before='~$' />
                 {/* <span className="text-xs text-base-content/60">{tokenLaunchToken?.symbol}</span> */}
               </div>
             </div>
             <div className="flex justify-between">
               <span>Circulating Supply</span>
               <div className="flex items-end space-x-1">
-                <NumberView number={viewToken.supply * viewToken.currentPrice * price} before='~$' />
+                <NumberView number={viewToken.supply}  />
                 {/* <span className="text-xs text-base-content/60">{token?.symbol}</span> */}
               </div>
             </div>
@@ -180,7 +169,7 @@ const TheOverview = ({ token, ...attrs }: TheOverviewProps) => {
               </ul>
             </div>
           </div>
-          <div className="w-full py-4 overflow-x-hidden h-72">
+          <div className="w-full py-4 overflow-x-hidden h-80">
             <VolumeChart className={clsx(
               'transition-transform duration-500',
               chartType === ChartType.Volume

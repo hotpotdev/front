@@ -57,20 +57,21 @@ export function FmtAmount(value: any, digits = 3, roundingFunction = Math.round,
   if (num === 0) return `${prefix}0`
   if (num < 0) prefix += '-'
   num = Math.abs(num)
-  if (num > Math.pow(10, 12)) {
+  if (num >= Math.pow(10, 12)) {
     num = num / Math.pow(10, 12)
     after = 'T'
-  } else if (num > Math.pow(10, 9)) {
+  } else if (num >= Math.pow(10, 9)) {
     num = num / Math.pow(10, 9)
     after = 'B'
-  } else if (num > Math.pow(10, 6)) {
+  } else if (num >= Math.pow(10, 6)) {
     num = num / Math.pow(10, 6)
     after = 'M'
-  } else if (num > Math.pow(10, 3)) {
+  } else if (num >= Math.pow(10, 4)) {
     num = num / Math.pow(10, 3)
     after = 'K'
   }
   const str = ScientificToString(num)
+  const maxCropNum = Math.pow(10, digits)
   const minCropNum = Math.pow(10, -digits)
   const dotIndex = str.indexOf('.')
   const integerNum = dotIndex === -1 ? num : Number(str.substring(0, dotIndex))
@@ -80,11 +81,11 @@ export function FmtAmount(value: any, digits = 3, roundingFunction = Math.round,
     const zeroLen = decimalPart.replace(/[1-9][0-9]*$/g, '').length
     decimalPart = decimalPart.replace(/00*/g, '')
     zeroStr = zeroLen && zeroLen > 0 ? `0{${zeroLen}}` : '';
+    return `${integerNum}.${zeroStr}${decimalPart.substring(0, digits)}`
   }
-  decimalPart = `${decimalPart.substring(0, digits)}.${decimalPart.substring(digits)}`
-  decimalPart = `${roundingFunction(Number(decimalPart))}`.replace(/0*$/, '')
-  const result = `${prefix}${integerNum}.${zeroStr}${decimalPart}${after}`.replace(/\.$/, '')
-  return result
+  const decimalNum = Number(`${integerNum}.${decimalPart.substring(0, digits + 1)}`)
+  const roundedNum = roundingFunction(decimalNum * maxCropNum) / maxCropNum
+  return `${prefix}${roundedNum.toFixed(digits)}${after}`
 }
 
 

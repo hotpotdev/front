@@ -50,3 +50,13 @@ export const SubscribeEmail = async ({
     mode: 'no-cors'
   });
 };
+
+/**
+ * stop input number scroll change
+ * @param event
+ * @returns
+ */
+export const StopScrollFun = (event: React.BaseSyntheticEvent) => {
+  if(event.currentTarget?.blur) event.currentTarget.blur()
+  return false;
+}

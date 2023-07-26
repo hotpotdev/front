@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import AddressView from '@/components/format-view/address-view';
 import { useAccount, useDisconnect } from 'wagmi';
 import { PowerIcon } from '@/assets';
-import LocaleLink from '../locale-link';
 import { UserIcon } from '@heroicons/react/24/outline';
 import UserAvatar from '@/components/avatar/user-avatar';
+import Link from 'next/link';
 
 type UserMenuProps = React.HTMLAttributes<HTMLElement> & {}
 
@@ -22,10 +22,10 @@ const UserMenu = ({ ...attrs }: UserMenuProps) => {
       </label>
       <ul tabIndex={1} className="dropdown-content menu menu-xs md:menu-md p-2 shadow bg-base-200 rounded-box w-52">
         <li>
-          <LocaleLink href='/profile'>
+          <Link href='/profile'>
             <UserIcon className="w-4 h-4" />
             <span>Profile</span>
-          </LocaleLink>
+          </Link>
         </li>
         <li onClick={() => disconnect()}>
           <div className="gap-0 space-x-2 flex items-center" >

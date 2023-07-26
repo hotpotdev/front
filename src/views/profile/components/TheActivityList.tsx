@@ -62,9 +62,8 @@ const TheActivityList = ({ ...attrs }: TheActivityListProps) => {
     if (!mintBurns) await refetch()
   }
   const { push } = useRouter()
-  const { locale } = useLocale()
   const onClickProject = async (index: number) => {
-    await push(`/${locale}/project?id=${index}`)
+    await push(`/project?id=${index}`)
   }
   const Empty = () => {
     return (

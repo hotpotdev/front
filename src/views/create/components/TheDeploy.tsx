@@ -132,7 +132,7 @@ const TheDeploy = ({ ...attrs }: TheDeployProps) => {
             </div>
             <div className="flex justify-between h-28">
               <dl className="w-1/3 space-y-2">
-                <dt className="font-bold whitespace-nowrap  space-y-2">Expect MarketCap</dt>
+                <dt className="font-bold whitespace-nowrap  space-y-2">Expect FDV</dt>
                 <dd className="text-base-content/80">
                   <NumberView number={tvl * price} before="~$" />
                 </dd>

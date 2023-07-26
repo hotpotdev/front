@@ -2,27 +2,29 @@ import { DownArrowIcon, SettingIcon } from '@/assets';
 import ConnectWallet from '@/components/connect-wallet';
 import NumberView from '@/components/format-view/number-view';
 import { CERT_TOKENS, CHAIN_PRICE_SYMBOL, GRAPHQL_API } from '@/conf';
-import { useCoingeckoPrice } from '@/hooks/useCoingecko';
 import { tokenAbi } from '@/libs/sdk/contracts/Token';
 import { IToken } from '@/libs/sdk/hooks/useToken';
 import { FormatToken } from '@/libs/sdk/utils/format';
-import { NetToChainId } from '@/utils';
+import { NetToChainId, StopScrollFun } from '@/utils';
 import customToast from '@/utils/customToast';
 import { useDebounce } from 'ahooks';
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { formatEther, formatUnits, parseEther, parseGwei, zeroAddress } from 'viem';
-import { useAccount, useBalance, useBlockNumber, useContractRead, useFeeData, usePublicClient, useQuery, useWalletClient } from 'wagmi';
-import { getContract, waitForTransaction, writeContract } from 'wagmi/actions';
+import { useAccount, useBalance, useContractRead, useFeeData, usePublicClient, useQuery } from 'wagmi';
+import { waitForTransaction, writeContract } from 'wagmi/actions';
 import SliPill from './sli-pill';
 import { XCircleIcon } from '@heroicons/react/24/outline';
+import useChain from '@/hooks/useChain';
+import { InputStringNumberWithCommas, InputStringToStringNumber, ScientificToString } from '@/libs/common/utils';
 
 
 type SwapProps = React.HTMLAttributes<HTMLElement> & {
   token: IToken
 }
 const Swap = ({ token, ...attrs }: SwapProps) => {
+  const { chain } = useChain()
   const viewToken = useMemo(() => token ? FormatToken(token) : undefined, [token])
   const tokenChainId = useMemo(() => NetToChainId(token?.net), [token?.net])
   const tokenLaunchToken = useMemo(() => tokenChainId ? CERT_TOKENS[tokenChainId].find(item => item.address === token.raisingToken) : undefined, [token.raisingToken, tokenChainId])
@@ -40,12 +42,13 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
   const [amount, slippage] = watch(['amount', 'slippage'])
 
   const payAmount = useDebounce(
-    amount && !isNaN(amount) ? parseEther(amount?.toString()) : 0n,
+    amount && !isNaN(amount) ? parseEther(ScientificToString(amount)) : 0n,
     { wait: 500 }
   );
 
   const { data: receiveAmount = 0n, isLoading } = useContractRead({
-    scopeKey: [{ amount, address: tokenLaunchToken?.address, tokenAddress: token.addr }].toString(),
+    chainId: chain.id,
+    scopeKey: [{ amount, address: tokenLaunchToken?.address, tokenAddress: token.addr, chainId: chain.id }].toString(),
     address: token.addr as `0x{string}`,
     abi: tokenAbi,
     functionName: isMint ? 'estimateMint' : 'estimateBurn',
@@ -58,17 +61,22 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
   });
   const { address: account, isConnected } = useAccount()
   const { data: launchBalance } = useBalance({
+    chainId: chain.id,
     address: account,
-    token: tokenLaunchToken?.address === zeroAddress ? undefined : tokenLaunchToken?.address
+    token: tokenLaunchToken?.address === zeroAddress ? undefined : tokenLaunchToken?.address,
+    watch: true,
   })
   const { data: tokenBalance } = useBalance({
+    chainId: chain.id,
     address: account,
-    token: token.addr as `0x${string}`
+    token: token.addr as `0x${string}`,
+    watch: true,
   })
   const balance = useMemo(() => isMint ? launchBalance : tokenBalance, [isMint, launchBalance, tokenBalance])
 
-  const publicClient = usePublicClient()
+  const publicClient = usePublicClient({ chainId: chain.id })
   const { data: feeData } = useFeeData({
+    chainId: chain.id,
     watch: true,
     formatUnits: 'wei',
     staleTime: 10 * 1e3,
@@ -96,10 +104,10 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
   const maxBalance = useMemo(() => {
     if (gas && balance?.value && feeData?.gasPrice && feeData?.maxFeePerGas) {
       const gasLimit = gas * (feeData.gasPrice + feeData?.maxFeePerGas) * 105n / 100n;
-      return isMint ? Number(formatEther(balance.value - gasLimit)) : Number(formatEther(balance.value));
+      return formatEther(balance.value - gasLimit);
     }
     return 0
-  }, [balance?.value, feeData?.gasPrice, feeData?.maxFeePerGas, gas, isMint])
+  }, [balance?.value, feeData?.gasPrice, feeData?.maxFeePerGas, gas])
 
   const minReceiveAmount = useMemo(() => slippage !== undefined ? receiveAmount * (10000n - BigInt(Math.floor(slippage * 1e2))) / (10000n) : 0n, [receiveAmount, slippage])
   const minReceive = useMemo(() => formatEther(minReceiveAmount), [minReceiveAmount])
@@ -108,6 +116,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
 
   const mintBurn = async () => {
     const result = await writeContract({
+      chainId: chain.id,
       address: token.addr as `0x${string}`,
       abi: tokenAbi,
       functionName: isMint ? 'mint' : 'burn',
@@ -115,12 +124,13 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
       account,
       value: isMint ? payAmount : 0n,
     })
-    await waitForTransaction({ hash: result.hash })
+    await waitForTransaction({ chainId: chain.id, hash: result.hash })
   }
   const mintBurnHandler = async () => {
     setIsActionLoading(true)
     let isSuccess = true;
-    const text = isMint ? 'Mint' : 'Burn'
+    const text = 'Swap'
+    // isMint ? 'Mint' : 'Burn'
     if (!amount || amount <= 0) {
       isSuccess = false;
       customToast.error(`${text} amount error!`)
@@ -150,24 +160,28 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
   }
 
   return (
-    <div {...attrs} className={clsx('space-y-2 px-4', attrs.className)}>
-      <div className="w-full flex items-center space-x-2">
+    <div {...attrs} className={clsx('space-y-3 px-1', attrs.className)}>
+      <div className="w-full flex items-center space-x-4">
         <label htmlFor="" className="relative block h-20 w-full">
           <input
             {...register('amount', {
-              valueAsNumber: true
+              min: { value: 0, message: 'Please set token supply between 0 - 99,999,999,999,999' },
+              setValueAs: v => v ? Number(InputStringToStringNumber(v.toString().replace(/^(00)+/g, ''), 18)) : v,
+              onChange(e) {
+                const val = e.target.value.replaceAll(',', '').replace(/^(00)+/g, '');
+                const strNum = InputStringToStringNumber(val, 18);
+                const viewNum = InputStringNumberWithCommas(strNum, 18);
+                e.currentTarget.value = viewNum
+              }
             })}
-            type="number"
+            type="text"
+            formNoValidate
             placeholder='0.0'
+            min={0}
+            onWheel={StopScrollFun}
             className="input input-sm h-full input-bordered text-xl w-full pr-32 truncate"
           />
-          {
-            Boolean(amount && amount.toString().length > 0) && <button className="absolute right-24 top-7 text-base-content/30" onClick={() => {
-              resetField('amount')
-            }}>
-              <XCircleIcon className="w-6 h-6" />
-            </button>
-          }
+
           <div className="absolute bottom-1.5 left-3 flex items-center space-x-1 text-xs text-base-content/30">
             <span>Balances:</span>
             <NumberView
@@ -179,6 +193,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
                 className="badge badge-ghost badge-sm badge-outline"
                 disabled={isLoading || isRefetching}
                 onClick={() => {
+                  //@ts-ignore
                   setValue('amount', maxBalance)
                 }}>
                 Max
@@ -186,18 +201,29 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
             }
           </div>
           {/* token */}
-          <div className="dropdown absolute top-6 right-2 bg-base-100">
-            <button type="button" className="btn btn-sm btn-outline">
-              <span>
-                {isMint ? tokenLaunchToken?.symbol : token.symbol}
-              </span>
-              <DownArrowIcon className="w-4 h-4" />
-            </button>
-            <ul className="p-2 shadow menu menu-xs dropdown-content rounded-box">
-              <li><button type="button" className={clsx(isMint ? 'active' : '')} onClick={() => setIsMint(true)}>{tokenLaunchToken?.symbol}</button></li>
-              <li><button type="button" className={clsx(!isMint ? 'active' : '')} onClick={() => setIsMint(false)}>{token.symbol}</button></li>
-            </ul>
+
+          <div className="absolute top-6 right-2 bg-base-100 flex items-center space-x-1">
+            {
+              Boolean(amount && amount.toString().length > 0) && <button className="text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
+                resetField('amount')
+              }}>
+                <XCircleIcon className="w-6 h-6" />
+              </button>
+            }
+            <div className="dropdown ">
+              <button type="button" className="btn btn-sm btn-outline">
+                <span>
+                  {isMint ? tokenLaunchToken?.symbol : token.symbol}
+                </span>
+                <DownArrowIcon className="w-4 h-4" />
+              </button>
+              <ul className="p-2 shadow menu menu-xs dropdown-content bg-base-100 rounded-box">
+                <li><button type="button" className={clsx(isMint ? 'active' : '')} onClick={() => setIsMint(true)}>{tokenLaunchToken?.symbol}</button></li>
+                <li><button type="button" className={clsx(!isMint ? 'active' : '')} onClick={() => setIsMint(false)}>{token.symbol}</button></li>
+              </ul>
+            </div>
           </div>
+
         </label>
         <div className="dropdown">
           <button type='button' className="inline-flex cursor-pointer" onClick={() => {
@@ -211,8 +237,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
               <SliPill sli={[0.005, 0.01, 0.03]} onSelected={item => setValue('slippage', item * 1e2)} selectValue={slippage} />
               <label>
                 <input
-                  {...register('slippage', {
-                  })}
+                  {...register('slippage', {})}
                   type="number"
                   placeholder="0.01"
                   className={clsx(
@@ -234,9 +259,10 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
             disabled={isLoading || isActionLoading || !amount || amount <= 0}
           >
             {isLoading || isActionLoading && <span className="loading loading-spinner loading-xs"></span>}
-            {
+            {/* {
               isMint ? 'Mint' : 'Burn'
-            }
+            } */}
+            Swap
           </button>
         ) :
           <ConnectWallet className="w-full" />

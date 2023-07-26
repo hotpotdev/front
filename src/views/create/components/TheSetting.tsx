@@ -7,6 +7,7 @@ import { IFormData } from '../type';
 import NumberView from '@/components/format-view/number-view';
 import { useMintFirstAmount } from '../hooks/useMintFirstAmount';
 import { XCircleIcon } from '@heroicons/react/24/outline';
+import { StopScrollFun } from '@/utils';
 
 type TheSettingProps = React.HTMLAttributes<HTMLElement> & {
 
@@ -35,7 +36,7 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
   ]);
 
   const { address: account, isConnected, isDisconnected } = useAccount()
-  const { payAmount, payValue, isLoading: isLoadingPayAmount } = useMintFirstAmount({
+  const { payValue, isLoading: isLoadingPayAmount } = useMintFirstAmount({
     bondingCurveType,
     supplyExpect,
     priceExpect,
@@ -52,8 +53,8 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
   }, [account, treasuryAddress, setValue])
 
   useEffect(() => {
-    if (isConnected) ref.current = true;
-  }, [isConnected])
+    if (isDisconnected) ref.current = true;
+  }, [isDisconnected])
 
   const taxRateReg = new RegExp(/^[0-9]+(\.[0-9]{1,2})?$/);
   const mintAmountReg = new RegExp(/^[0-9]+(\.[0-9]+)?$/);
@@ -89,7 +90,7 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
 
             <div className="absolute inset-y-0 right-0 flex items-center pr-1.5">
               {
-                Boolean(treasuryAddress && treasuryAddress.toString().length > 0) && <button className="text-base-content/30" onClick={() => {
+                Boolean(treasuryAddress && treasuryAddress.toString().length > 0) && <button type='button' className="text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                   resetField('treasuryAddress')
                   trigger('treasuryAddress')
                 }}>
@@ -141,7 +142,7 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
               step={0.01}
               min={0}
               max={20}
-              defaultValue={0}
+              onWheel={StopScrollFun}
               className={clsx(
                 'input input-bordered w-full',
                 errors.mintTaxRate && 'input-error'
@@ -149,7 +150,7 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
               placeholder="ps: 0.01"
             />
             {
-              Boolean(mintTaxRate && mintTaxRate.toString().length > 0) && <button className=" absolute top-3 right-16 text-base-content/30" onClick={() => {
+              Boolean(mintTaxRate && mintTaxRate.toString().length > 0) && <button className=" absolute top-3 right-16 text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                 resetField('mintTaxRate')
                 trigger('mintTaxRate')
               }}>
@@ -178,8 +179,8 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
             <input
               {...register('burnTaxRate', {
                 valueAsNumber: true,
-                min: { value: 0, message: 'min' },
-                max: { value: 20, message: 'max' },
+                min: { value: 0, message: 'minimum 0%' },
+                max: { value: 20, message: 'maximum 20%' },
                 required: {
                   value: true,
                   message: 'Please set burn tax rate'
@@ -191,7 +192,7 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
               step={0.01}
               min={0}
               max={20}
-              defaultValue={0}
+              onWheel={StopScrollFun}
               className={clsx(
                 'input input-bordered w-full',
                 errors.burnTaxRate && 'input-error'
@@ -199,7 +200,7 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
               placeholder="ps: 0.01"
             />
             {
-              Boolean(burnTaxRate && burnTaxRate.toString().length > 0) && <button className=" absolute top-3 right-16 text-base-content/30" onClick={() => {
+              Boolean(burnTaxRate && burnTaxRate.toString().length > 0) && <button className=" absolute top-3 right-16 text-base-content/30 bg-base-100 rounded-r-full" onClick={() => {
                 resetField('burnTaxRate')
                 trigger('burnTaxRate')
               }}>
@@ -260,8 +261,8 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
               />
               {
                 Boolean(mintAmount && mintAmount.toString().length > 0) && <button
-                  style={{ right: (symbol?.length ?? 0) + 0.5 + 'rem' }}
-                  className="absolute top-3 text-base-content/30"
+                  style={{ right: (symbol?.length ?? 0) + 1.2 + 'rem' }}
+                  className="absolute top-3 text-base-content/30 bg-base-100 rounded-r-full"
                   onClick={() => {
                     resetField('mintAmount')
                     trigger('mintAmount')
@@ -269,7 +270,7 @@ const TheSetting = ({ ...attrs }: TheSettingProps) => {
                   <XCircleIcon className="w-6 h-6" />
                 </button>
               }
-              <div className="absolute inset-y-0 bottom-[1px] right-[1px] top-[1px] flex items-center justify-center border-l px-3 bg-base-100">
+              <div className="absolute inset-y-0 bottom-[1px] right-[3px] top-[1px] flex items-center rounded-r-full justify-center border-l px-3 bg-base-100">
                 {symbol}
               </div>
             </div>

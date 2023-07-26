@@ -6,7 +6,7 @@ import { useCopyToClipboard } from 'react-use';
 import { useEffect, useState } from 'react';
 import { CopyIcon, ShareIcon, SuccessIcon } from '@/assets';
 import { FmtAddress } from '@/libs/common/format';
-import LocaleLink from '@/components/locale-link';
+import Link from 'next/link';
 import { Hash } from '@/libs/types/type';
 import useChain from '@/hooks/useChain';
 
@@ -42,35 +42,33 @@ const AddressView = ({ address, showTip = true, showCopy = true, showShare = fal
       setTargetUrl(`${chain.blockExplorers.default.url}/${type}/${address}`)
     }
   }, [address, chain.blockExplorers, shareUrl, type])
-  if(!address) return null
+  if (!address) return null
   return (
-    <>
-      <span className={clsx('inline-flex items-center justify-center space-x-1')}>
-        <span
-          className={clsx(
-            'inline-flex items-center',
-            'before:text-xs before:shadow after:z-50',
-            'before:z-50 before:max-w-[14rem] before:overflow-visible before:whitespace-pre-wrap before:break-words before:bg-base-300 before:text-left before:text-[1em] before:font-normal before:text-base-content',
-            attrs.className,
-            showTip && 'tooltip-hover tooltip tooltip-top'
-          )}
-          data-tip={address}
-        >
-          {FmtAddress(address)}
-        </span>
-        {
-          showCopy && show && <SuccessIcon className="cursor-pointer w-4 h-4 !stroke-success !fill-success" />
-        }
-        {
-          showCopy && !show && <CopyIcon className="cursor-pointer fill-current w-4 h-4 hover:scale-105" onClick={() => copyToClipboard(address)} />
-        }
-        {
-          showShare && targetUrl && <LocaleLink href={targetUrl} target="_blank" rel="noreferrer" className="hover:scale-105 hover:text-primary">
-            <ShareIcon className="cursor-pointer fill-current w-4 h-4" />
-          </LocaleLink>
-        }
+    <span className={clsx('inline-flex items-center space-x-1')}>
+      <span
+        className={clsx(
+          'inline-flex items-center',
+          'before:text-xs before:shadow after:z-50',
+          'before:z-50 before:max-w-[14rem] before:overflow-visible before:whitespace-pre-wrap before:break-words before:bg-base-300 before:text-left before:text-[1em] before:font-normal before:text-base-content',
+          attrs.className,
+          showTip && 'tooltip-hover tooltip tooltip-top'
+        )}
+        data-tip={address}
+      >
+        {FmtAddress(address)}
       </span>
-    </>
+      {
+        showCopy && show && <SuccessIcon className="cursor-pointer w-4 h-4 !stroke-success !fill-success" />
+      }
+      {
+        showCopy && !show && <CopyIcon className="cursor-pointer fill-current w-4 h-4 mb-1 hover:scale-105 hover:text-primary" onClick={() => copyToClipboard(address)} />
+      }
+      {
+        showShare && targetUrl && <Link href={targetUrl} target="_blank" rel="noreferrer">
+          <ShareIcon className="cursor-pointer fill-current w-4 h-4 mb-1 hover:scale-105 hover:text-primary" />
+        </Link>
+      }
+    </span>
   );
 };
 

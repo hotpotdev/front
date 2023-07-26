@@ -56,7 +56,7 @@ const VolumeChart = ({ token, intervalType, interval, ...attrs }: VolumeChartPro
   const dataFormatted = useMemo(() => {
     let result: ItemType[] = []
     const dataTime = data?.[data?.length - 1]?.timestamp;
-    const fastIntTime = intervalType === 'hour' ? (fastTimestamp - fastTimestamp % 3600) * 1e3 : new Date(fastTimestamp*1e3).setHours(0,0,0,0)
+    const fastIntTime = intervalType === 'hour' ? (fastTimestamp - fastTimestamp % 3600) * 1e3 : new Date(fastTimestamp * 1e3).setHours(0, 0, 0, 0)
     const lastIntTime = (intervalType === 'hour' ? (lastTimestamp - lastTimestamp % 3600) : lastTimestamp) * 1e3
     const fast = dataTime && fastIntTime == 0 ? Math.max(dataTime, fastIntTime) : fastIntTime;
     const last = lastIntTime;
@@ -77,7 +77,7 @@ const VolumeChart = ({ token, intervalType, interval, ...attrs }: VolumeChartPro
       }
       if (item) obj = item;
       if (items && items.length > 0) {
-        obj.timestamp = Math.min(items.sort(item => item.timestamp - item.timestamp)[0].timestamp,i)
+        obj.timestamp = Math.min(items.sort(item => item.timestamp - item.timestamp)[0].timestamp, i)
         items.forEach(item => {
           obj.minPrice += item.minPrice
           obj.maxPrice += item.maxPrice
@@ -138,15 +138,15 @@ const VolumeChart = ({ token, intervalType, interval, ...attrs }: VolumeChartPro
                   </div>
                   <div className="space-x-1">
                     <span>OpenPrice:</span>
-                    <span>{FmtAmount(item?.openPrice)}</span>
+                    <span>{FmtAmount(item?.openPrice, 6)}</span>
                   </div>
                   <div className="space-x-1">
                     <span>Low:</span>
-                    <span>{FmtAmount(item?.minPrice)}</span>
+                    <span>{FmtAmount(item?.minPrice, 6)}</span>
                   </div>
                   <div className="space-x-1">
                     <span>High:</span>
-                    <span>{FmtAmount(item?.maxPrice)}</span>
+                    <span>{FmtAmount(item?.maxPrice, 6)}</span>
                   </div>
                 </div>
               );
@@ -159,12 +159,11 @@ const VolumeChart = ({ token, intervalType, interval, ...attrs }: VolumeChartPro
               <stop offset="100%" stopColor="rgba(39,174,96,0.1)" />
             </linearGradient>
           </defs>
-          <Area orientation='right' key={`VolumeCurveChart`} type="monotone" dataKey={'minPrice'} strokeWidth={2} stroke="rgba(39,174,96,0.8)" fill={`url(#${id})`} />
+          <Area orientation='right' key={`VolumeCurveChart`} type="monotone" dataKey={'minPrice'} strokeWidth={2} stroke="rgba(39,174,96,1)" fill={`url(#${id})`} />
           <Brush
             dataKey={'timestamp'}
             tickFormatter={(value) => format(new Date(value), 'MM/dd/yyyy')}
             height={30}
-            y={220}
             stroke='rgba(39,174,96,0.5)'
             travellerWidth={10}
           />

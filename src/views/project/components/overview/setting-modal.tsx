@@ -8,6 +8,7 @@ import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { tokenAbi } from '@/libs/sdk/contracts/Token'
 import customToast from '@/utils/customToast'
 import { useForm } from 'react-hook-form'
+import useChain from '@/hooks/useChain'
 
 type SettingModalProps = React.HTMLAttributes<HTMLElement> & {}
 
@@ -26,8 +27,8 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
     defaultValues: {
       treasury: token?.treasury,
       admin: token?.admin,
-      mintTax: (viewToken?.mintTax || 0) * 1e2,
-      burnTax: (viewToken?.burnTax || 0) * 1e2
+      mintTax: (viewToken?.mintTax ?? 0) * 1e2,
+      burnTax: (viewToken?.burnTax ?? 0) * 1e2
     }
   })
 
@@ -39,7 +40,9 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
   const [editTreasury, setEditTreasury] = useState(false)
   const [editRate, setEditRate] = useState(false)
 
+  const { chain }  = useChain()
   const { config: setProjectTreasuryConf } = usePrepareContractWrite({
+    chainId: chain.id,
     address: token?.addr as `0x${string}` | undefined,
     enabled: Boolean(token?.addr),
     abi: tokenAbi,
@@ -49,6 +52,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
   const { isLoading: isLoadingTreasury, writeAsync: writeTreasury } = useContractWrite(setProjectTreasuryConf)
 
   const { config: setProjectTaxRateConf } = usePrepareContractWrite({
+    chainId: chain.id,
     address: token?.addr as `0x${string}` | undefined,
     enabled: Boolean(token?.addr),
     abi: tokenAbi,
@@ -58,6 +62,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
   const { isLoading: isLoadingTaxRate, writeAsync: writeTaxRate } = useContractWrite(setProjectTaxRateConf)
 
   const { config: setProjectAdminConf } = usePrepareContractWrite({
+    chainId: chain.id,
     address: token?.addr as `0x${string}` | undefined,
     enabled: Boolean(token?.addr),
     abi: tokenAbi,
@@ -88,7 +93,6 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
   }
 
   const ConfirmRate = async () => {
-    console.log(token?.mintTax, newMintTaxRate, token?.burnTax, newBurnTaxRate)
     if ((token?.mintTax != newMintTaxRate || token?.burnTax != newBurnTaxRate) && writeTaxRate) {
       try {
         await customToast.promise(writeTaxRate(), {
