@@ -149,7 +149,8 @@ export const EncodeLaunchData = (data: ILaunchParam): { calldata: Array<any>; va
   }
   const mintTaxRate = BigInt(Math.floor(data.mintTaxRate * 1e2));
   const burnTaxRate = BigInt(Math.floor(data.burnTaxRate * 1e2));
-  const payAmount = data.payAmount ? data.payAmount * 10000n / (10000n - mintTaxRate - 80n) : 0n;
+  const payAmount = data.payAmount ? data.payAmount * 10000n / (10000n - mintTaxRate - BigInt(data?.factroyMintTaxRate ?? 80)) : 0n;
+  console.log(data,payAmount)
   return {
     calldata: [
       data.tokenType,

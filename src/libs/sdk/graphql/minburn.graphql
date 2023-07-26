@@ -45,6 +45,8 @@ fragment MintBurnFields on MintBurnEntity {
   timestamp
   to
   blockNum
+  platformFee
+  projectFee
   token {
     ...TokenFields
   }

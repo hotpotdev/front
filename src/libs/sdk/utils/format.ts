@@ -1,8 +1,31 @@
 import { IToken } from "../hooks/useToken";
-import { PriceByDayFieldsFragment, PriceByHourFieldsFragment } from "../types/graphql";
+import { PriceByDayFieldsFragment, PriceByHourFieldsFragment, TokenFieldsFragment } from "../types/graphql";
+import { IBondingCurveType } from "../types/curve";
+import { FormatBondingCurve } from "./curve";
 
 export const RATE_MULTIPLIER = 1e4
 export const DECIMALS = 18
+
+export function ConverToToken(token: TokenFieldsFragment | null | undefined): IToken | null {
+  if (!token) {
+    return null;
+  }
+  let params = JSON.parse(token.params)['params'];
+  for (const key in params) {
+    if (Object.prototype.hasOwnProperty.call(params, key)) {
+      params[key] = parseInt(params[key], 16)
+    }
+  }
+  if (params['x']) params['a'] = params['x']
+  if (params['y']) params['b'] = params['y']
+  return {
+    ...token,
+    params: FormatBondingCurve({
+      type: token.bondingCurveType as IBondingCurveType,
+      params: params
+    })
+  } as IToken
+};
 export const FormatToken = (token: IToken) => {
   return {
     ...token,
@@ -14,7 +37,7 @@ export const FormatToken = (token: IToken) => {
     createTimestamp: Number(token.createTimestamp) * 1e3,
     burnTax: Number(token.burnTax) / RATE_MULTIPLIER,
     mintTax: Number(token.mintTax) / RATE_MULTIPLIER,
-    treasuryFee: Number(token.treasuryFee) / RATE_MULTIPLIER,
+    treasuryFee: Number(token.treasuryFee),
     memberCount: Number(token.memberCount)
   }
 }

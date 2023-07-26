@@ -48,6 +48,8 @@ export const MintBurnFieldsFragmentDoc = gql`
   timestamp
   to
   blockNum
+  platformFee
+  projectFee
   token {
     ...TokenFields
   }

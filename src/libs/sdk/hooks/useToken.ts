@@ -41,6 +41,8 @@ export const useMultiTokens = ({ endpoints, variables, requestHeaders, enabled =
             params[key] = parseInt(params[key], 16)
           }
         }
+        if (params['x']) params['a'] = params['x']
+        if (params['y']) params['b'] = params['y']
         return {
           ...token,
           params: FormatBondingCurve({
@@ -112,6 +114,8 @@ export const useMultiToken = ({ endpoints, address, requestHeaders, enabled = tr
             params[key] = parseInt(params[key], 16)
           }
         }
+        if (params['x']) params['a'] = params['x']
+        if (params['y']) params['b'] = params['y']
         return {
           ...tokenEntity,
           params: FormatBondingCurve({
@@ -168,7 +172,7 @@ export type useMultiTokenWhereProps = {
 export const useMultiTokenWhere = ({ endpoints, index, address, name, symbol, variables, requestHeaders, enabled = true, cacheTime = 5 * 60 * 1000, staleTime = 1 * 60 * 1000 }: useMultiTokenWhereProps) => {
   const isIndex = useMemo(() => index !== undefined && index >= 0, [index])
   const isName = useMemo(() => Boolean(name), [name])
-  const isSymbol = useMemo(()=>Boolean(symbol),[symbol])
+  const isSymbol = useMemo(() => Boolean(symbol), [symbol])
   const isAddress = useMemo(() => Boolean(address), [address])
   const isEnabled = useMemo(() => Boolean(endpoints && endpoints.length > 0 && (isIndex || isName || isIndex || isSymbol || isAddress) && enabled), [enabled, endpoints, isAddress, isIndex, isName, isSymbol])
   const queryFn = async () => {
@@ -217,6 +221,8 @@ export const useMultiTokenWhere = ({ endpoints, index, address, name, symbol, va
             params[key] = parseInt(params[key], 16)
           }
         }
+        if (params['x']) params['a'] = params['x']
+        if (params['y']) params['b'] = params['y']
         return {
           ...token,
           params: FormatBondingCurve({
@@ -292,6 +298,8 @@ export const useMultiOwnedTokens = ({ endpoints, owner, variables, requestHeader
             params[key] = parseInt(params[key], 16)
           }
         }
+        if (params['x']) params['a'] = params['x']
+        if (params['y']) params['b'] = params['y']
         return {
           ...token,
           params: FormatBondingCurve({
@@ -366,6 +374,8 @@ export const useMultiCreateTokens = ({ endpoints, creator, variables, requestHea
             params[key] = parseInt(params[key], 16)
           }
         }
+        if (params['x']) params['a'] = params['x']
+        if (params['y']) params['b'] = params['y']
         return {
           ...token,
           params: FormatBondingCurve({

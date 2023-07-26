@@ -45,6 +45,8 @@ export const useMultiMintBurnWhereFrom = ({ endpoints, from, variables, requestH
             params[key] = parseInt(params[key], 16)
           }
         }
+        if (params['x']) params['a'] = params['x']
+        if (params['y']) params['b'] = params['y']
         return {
           ...item,
           token: {
@@ -119,6 +121,8 @@ export const useMultiMintBurnWhereTo = ({ endpoints, to, variables, requestHeade
             params[key] = parseInt(params[key], 16)
           }
         }
+        if (params['x']) params['a'] = params['x']
+        if (params['y']) params['b'] = params['y']
         return {
           ...item,
           token: {
@@ -194,6 +198,8 @@ export const useMultiMintBurnWhereToken = ({ endpoints, tokenAddress, variables,
             params[key] = parseInt(params[key], 16)
           }
         }
+        if (params['x']) params['a'] = params['x']
+        if (params['y']) params['b'] = params['y']
         return {
           ...item,
           token: {

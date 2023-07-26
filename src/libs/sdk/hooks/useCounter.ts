@@ -9,7 +9,6 @@ export type ICounter = CounterFieldsFragment & {
 
 }
 
-
 export type useMultiCounterWhereProps = {
   endpoints?: string[]
   types?: string[]

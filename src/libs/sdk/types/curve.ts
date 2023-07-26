@@ -19,6 +19,7 @@ export type IParamTypes = {
   exponential: IExponentialParam;
 }
 export type IBaseLaunchParam<T extends IBondingCurveType> = {
+  factroyMintTaxRate?: number,
   tokenType: ITokenType;
   bondingCurveType: T;
   name: string;

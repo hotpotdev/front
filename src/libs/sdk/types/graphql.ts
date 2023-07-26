@@ -1313,6 +1313,22 @@ export type MintBurnEntity_Filter = {
   nativeAmount_not?: InputMaybe<Scalars['BigDecimal']['input']>;
   nativeAmount_not_in?: InputMaybe<Array<Scalars['BigDecimal']['input']>>;
   or?: InputMaybe<Array<InputMaybe<MintBurnEntity_Filter>>>;
+  platformFee?: InputMaybe<Scalars['BigDecimal']['input']>;
+  platformFee_gt?: InputMaybe<Scalars['BigDecimal']['input']>;
+  platformFee_gte?: InputMaybe<Scalars['BigDecimal']['input']>;
+  platformFee_in?: InputMaybe<Array<Scalars['BigDecimal']['input']>>;
+  platformFee_lt?: InputMaybe<Scalars['BigDecimal']['input']>;
+  platformFee_lte?: InputMaybe<Scalars['BigDecimal']['input']>;
+  platformFee_not?: InputMaybe<Scalars['BigDecimal']['input']>;
+  platformFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']['input']>>;
+  projectFee?: InputMaybe<Scalars['BigDecimal']['input']>;
+  projectFee_gt?: InputMaybe<Scalars['BigDecimal']['input']>;
+  projectFee_gte?: InputMaybe<Scalars['BigDecimal']['input']>;
+  projectFee_in?: InputMaybe<Array<Scalars['BigDecimal']['input']>>;
+  projectFee_lt?: InputMaybe<Scalars['BigDecimal']['input']>;
+  projectFee_lte?: InputMaybe<Scalars['BigDecimal']['input']>;
+  projectFee_not?: InputMaybe<Scalars['BigDecimal']['input']>;
+  projectFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']['input']>>;
   timestamp?: InputMaybe<Scalars['BigInt']['input']>;
   timestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
   timestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
@@ -1362,6 +1378,8 @@ export enum MintBurnEntity_OrderBy {
   Hash = 'hash',
   Id = 'id',
   NativeAmount = 'nativeAmount',
+  PlatformFee = 'platformFee',
+  ProjectFee = 'projectFee',
   Timestamp = 'timestamp',
   To = 'to',
   Token = 'token',
@@ -2538,7 +2556,7 @@ export type FetchMintBurnsWhereFromQueryVariables = Exact<{
 }>;
 
 
-export type FetchMintBurnsWhereFromQuery = { __typename?: 'Query', mintBurnEntities: Array<{ __typename?: 'MintBurnEntity', id: `0x${string}`, direction: number, erc20Amount: bigint, from: `0x${string}`, nativeAmount: bigint, hash: `0x${string}`, timestamp: bigint, to: `0x${string}`, blockNum: bigint, token: { __typename?: 'TokenEntity', addr: `0x${string}`, admin: `0x${string}`, creator: `0x${string}`, net: string, bondingCurveType: string, burnTax: bigint, createTimestamp: bigint, currentPrice: bigint, factory: `0x${string}`, index: bigint, lockValue: bigint, marketCap: bigint, memberCount: bigint, metaUri: string, mintTax: bigint, name: string, params: string, raisingToken: `0x${string}`, supply: bigint, symbol: string, tokenType: string, treasury: `0x${string}`, treasuryFee: bigint } }> };
+export type FetchMintBurnsWhereFromQuery = { __typename?: 'Query', mintBurnEntities: Array<{ __typename?: 'MintBurnEntity', id: `0x${string}`, direction: number, erc20Amount: bigint, from: `0x${string}`, nativeAmount: bigint, hash: `0x${string}`, timestamp: bigint, to: `0x${string}`, blockNum: bigint, platformFee: bigint, projectFee: bigint, token: { __typename?: 'TokenEntity', addr: `0x${string}`, admin: `0x${string}`, creator: `0x${string}`, net: string, bondingCurveType: string, burnTax: bigint, createTimestamp: bigint, currentPrice: bigint, factory: `0x${string}`, index: bigint, lockValue: bigint, marketCap: bigint, memberCount: bigint, metaUri: string, mintTax: bigint, name: string, params: string, raisingToken: `0x${string}`, supply: bigint, symbol: string, tokenType: string, treasury: `0x${string}`, treasuryFee: bigint } }> };
 
 export type FetchMintBurnsWhereToQueryVariables = Exact<{
   to: Scalars['Bytes']['input'];
@@ -2549,7 +2567,7 @@ export type FetchMintBurnsWhereToQueryVariables = Exact<{
 }>;
 
 
-export type FetchMintBurnsWhereToQuery = { __typename?: 'Query', mintBurnEntities: Array<{ __typename?: 'MintBurnEntity', id: `0x${string}`, direction: number, erc20Amount: bigint, from: `0x${string}`, nativeAmount: bigint, hash: `0x${string}`, timestamp: bigint, to: `0x${string}`, blockNum: bigint, token: { __typename?: 'TokenEntity', addr: `0x${string}`, admin: `0x${string}`, creator: `0x${string}`, net: string, bondingCurveType: string, burnTax: bigint, createTimestamp: bigint, currentPrice: bigint, factory: `0x${string}`, index: bigint, lockValue: bigint, marketCap: bigint, memberCount: bigint, metaUri: string, mintTax: bigint, name: string, params: string, raisingToken: `0x${string}`, supply: bigint, symbol: string, tokenType: string, treasury: `0x${string}`, treasuryFee: bigint } }> };
+export type FetchMintBurnsWhereToQuery = { __typename?: 'Query', mintBurnEntities: Array<{ __typename?: 'MintBurnEntity', id: `0x${string}`, direction: number, erc20Amount: bigint, from: `0x${string}`, nativeAmount: bigint, hash: `0x${string}`, timestamp: bigint, to: `0x${string}`, blockNum: bigint, platformFee: bigint, projectFee: bigint, token: { __typename?: 'TokenEntity', addr: `0x${string}`, admin: `0x${string}`, creator: `0x${string}`, net: string, bondingCurveType: string, burnTax: bigint, createTimestamp: bigint, currentPrice: bigint, factory: `0x${string}`, index: bigint, lockValue: bigint, marketCap: bigint, memberCount: bigint, metaUri: string, mintTax: bigint, name: string, params: string, raisingToken: `0x${string}`, supply: bigint, symbol: string, tokenType: string, treasury: `0x${string}`, treasuryFee: bigint } }> };
 
 export type FetchMintBurnsWhereTokenQueryVariables = Exact<{
   tokenAddress: Scalars['Bytes']['input'];
@@ -2560,9 +2578,9 @@ export type FetchMintBurnsWhereTokenQueryVariables = Exact<{
 }>;
 
 
-export type FetchMintBurnsWhereTokenQuery = { __typename?: 'Query', mintBurnEntities: Array<{ __typename?: 'MintBurnEntity', id: `0x${string}`, direction: number, erc20Amount: bigint, from: `0x${string}`, nativeAmount: bigint, hash: `0x${string}`, timestamp: bigint, to: `0x${string}`, blockNum: bigint, token: { __typename?: 'TokenEntity', addr: `0x${string}`, admin: `0x${string}`, creator: `0x${string}`, net: string, bondingCurveType: string, burnTax: bigint, createTimestamp: bigint, currentPrice: bigint, factory: `0x${string}`, index: bigint, lockValue: bigint, marketCap: bigint, memberCount: bigint, metaUri: string, mintTax: bigint, name: string, params: string, raisingToken: `0x${string}`, supply: bigint, symbol: string, tokenType: string, treasury: `0x${string}`, treasuryFee: bigint } }> };
+export type FetchMintBurnsWhereTokenQuery = { __typename?: 'Query', mintBurnEntities: Array<{ __typename?: 'MintBurnEntity', id: `0x${string}`, direction: number, erc20Amount: bigint, from: `0x${string}`, nativeAmount: bigint, hash: `0x${string}`, timestamp: bigint, to: `0x${string}`, blockNum: bigint, platformFee: bigint, projectFee: bigint, token: { __typename?: 'TokenEntity', addr: `0x${string}`, admin: `0x${string}`, creator: `0x${string}`, net: string, bondingCurveType: string, burnTax: bigint, createTimestamp: bigint, currentPrice: bigint, factory: `0x${string}`, index: bigint, lockValue: bigint, marketCap: bigint, memberCount: bigint, metaUri: string, mintTax: bigint, name: string, params: string, raisingToken: `0x${string}`, supply: bigint, symbol: string, tokenType: string, treasury: `0x${string}`, treasuryFee: bigint } }> };
 
-export type MintBurnFieldsFragment = { __typename?: 'MintBurnEntity', id: `0x${string}`, direction: number, erc20Amount: bigint, from: `0x${string}`, nativeAmount: bigint, hash: `0x${string}`, timestamp: bigint, to: `0x${string}`, blockNum: bigint, token: { __typename?: 'TokenEntity', addr: `0x${string}`, admin: `0x${string}`, creator: `0x${string}`, net: string, bondingCurveType: string, burnTax: bigint, createTimestamp: bigint, currentPrice: bigint, factory: `0x${string}`, index: bigint, lockValue: bigint, marketCap: bigint, memberCount: bigint, metaUri: string, mintTax: bigint, name: string, params: string, raisingToken: `0x${string}`, supply: bigint, symbol: string, tokenType: string, treasury: `0x${string}`, treasuryFee: bigint } };
+export type MintBurnFieldsFragment = { __typename?: 'MintBurnEntity', id: `0x${string}`, direction: number, erc20Amount: bigint, from: `0x${string}`, nativeAmount: bigint, hash: `0x${string}`, timestamp: bigint, to: `0x${string}`, blockNum: bigint, platformFee: bigint, projectFee: bigint, token: { __typename?: 'TokenEntity', addr: `0x${string}`, admin: `0x${string}`, creator: `0x${string}`, net: string, bondingCurveType: string, burnTax: bigint, createTimestamp: bigint, currentPrice: bigint, factory: `0x${string}`, index: bigint, lockValue: bigint, marketCap: bigint, memberCount: bigint, metaUri: string, mintTax: bigint, name: string, params: string, raisingToken: `0x${string}`, supply: bigint, symbol: string, tokenType: string, treasury: `0x${string}`, treasuryFee: bigint } };
 
 export type FetchPlatformQueryVariables = Exact<{ [key: string]: never; }>;
 
