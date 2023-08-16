@@ -4,6 +4,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Connector, useConnect } from 'wagmi';
 import ConnectorsAvatar from '../avatar/connector-avatar';
 import { useWalletStore } from '@/store/useWalletStore';
+import { useTranslation } from 'next-export-i18n';
 
 
 type ConnectWalletModalProps = React.HTMLAttributes<HTMLElement> & PropsWithChildren<{
@@ -11,6 +12,7 @@ type ConnectWalletModalProps = React.HTMLAttributes<HTMLElement> & PropsWithChil
 }>;
 
 const ConnectWalletModal = ({ children, ...attrs }: ConnectWalletModalProps) => {
+  const { t } = useTranslation()
   const isConnectModalOpen = useWalletStore(state => state.isConnectModalOpen)
   const setIsConnectModalOpen = useWalletStore(state => state.setIsConnectModalOpen)
   const { connectAsync, connectors, error, isLoading, pendingConnector, reset, isSuccess } = useConnect()
@@ -35,7 +37,7 @@ const ConnectWalletModal = ({ children, ...attrs }: ConnectWalletModalProps) => 
       <div className="absolute w-full h-full flex items-center justify-center bg-base-content/30" onClick={() => close()}>
         <div className="bg-base-200 w-full max-w-xs px-6 py-7 space-y-6 rounded-2xl" onClick={(e) => e.stopPropagation()}>
           <header className="flex justify-center items-center">
-            <h3 className="font-bold w-full text-center">Connect Wallet</h3>
+            <h3 className="font-bold w-full text-center">{t('connect-wallet')}</h3>
             <button className="btn-sm btn-circle btn hover:bg-base-300" onClick={() => setIsConnectModalOpen(false)}>
               <XMarkIcon className="h-5 w-5" />
             </button>

@@ -3,6 +3,7 @@ import { FileToBase64 } from '@/libs/common/file';
 import { RandomHash } from '@/libs/common/random';
 import { GenerateGradientSVG, SVG2Base64, SVG2File } from '@/libs/common/svg';
 import clsx from 'clsx';
+import { useTranslation } from 'next-export-i18n';
 
 import Image from 'next/image';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -14,7 +15,7 @@ type UploadImageProps = {
   onChanged?: (file: File | undefined, fileData: string | undefined) => void;
   showRandom?: boolean;
 } & React.HTMLAttributes<HTMLElement>;
-// 上传图片
+// UploadImage
 const UploadImage = ({
   required = true,
   maxSize = 2 * 1024 * 1024,
@@ -22,6 +23,7 @@ const UploadImage = ({
   showRandom = false,
   ...attrs
 }: UploadImageProps) => {
+  const { t } = useTranslation()
   const [url, setUrl] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +82,7 @@ const UploadImage = ({
     >
       {!url && <input {...attrs} type="file" className="h-0 w-0" onChange={onChange} />}
       <ImageIcon className="w-12 h-12 fill-current" />
-      {error ? <p className="text-xs">{error}</p> : <p className="text-xs">Max 10MB</p>}
+      {error ? <p className="text-xs">{error}</p> : <p className="text-xs">{t('max-10mb')}</p>}
     </div>
     )
   }

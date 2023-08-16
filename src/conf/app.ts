@@ -1,4 +1,3 @@
-import { i18n } from '@@/next-i18next.config';
 import { Poppins } from 'next/font/google';
 
 // app name
@@ -14,7 +13,10 @@ export const APP_FONT = Poppins({
 export const APP_THEME = 'dark';
 export const APP_THEMES = ['system', 'dark', 'light'];
 
-export const APP_I18N = i18n;
+export const APP_I18N = {
+  locales: ['en', 'zh-CN'],
+  defaultLocale: 'en'
+};
 export const APP_DIR = 'ltr';
 
 export const APP_URL = {

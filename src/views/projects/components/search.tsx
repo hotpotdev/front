@@ -1,10 +1,12 @@
 import { SearchIcon } from '@/assets'
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx'
+import { useTranslation } from 'next-export-i18n';
 import { useFormContext } from 'react-hook-form';
 
 type SearchProps = React.HTMLAttributes<HTMLElement> & {}
 const Search = ({ ...attrs }: SearchProps) => {
+  const { t } = useTranslation()
   const { register, resetField, watch } = useFormContext();
   const [search] = watch(['search'])
   return (

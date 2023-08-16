@@ -2,7 +2,7 @@ import { getUrl } from "@/hooks/useWeb3Storage";
 import type { IHotpot_Metadata } from "@/libs/types/metadata";
 import { UpLoadString, UploadFile } from "@/utils/ipfs";
 
-// 上传数据
+// UploadMetadata
 export const UploadMetadata = async (metadata: IHotpot_Metadata, logoFile?: File) => {
   if (logoFile) {
     metadata.image = await UploadFile(logoFile) as string;
@@ -11,7 +11,7 @@ export const UploadMetadata = async (metadata: IHotpot_Metadata, logoFile?: File
   return metadataUrl
 }
 
-// 获取数据
+// FetchMetadata
 export const FetchMetadata = async (url: `ipfs://${string}`): Promise<IHotpot_Metadata> => {
   const res = await fetch(getUrl(url.replaceAll('ipfs://', '')), {
     mode: 'cors'

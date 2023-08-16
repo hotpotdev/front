@@ -4,7 +4,7 @@ import type { PropsWithChildren } from 'react';
 type TemplateProps = React.HTMLAttributes<HTMLElement> & PropsWithChildren<{
 
 }>;
-// 模板
+// Template
 const Template = ({ children, ...attrs }: TemplateProps) => {
   return (
     <div {...attrs} className={clsx('', attrs.className)}>

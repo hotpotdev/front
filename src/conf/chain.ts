@@ -190,12 +190,12 @@ export const CHAIN_PRICE_SYMBOL: I_CHAIN_PRICE_SYMBOL = {
 
 /// 链 Graphql
 export const GRAPHQL_API: { [key: number]: string } = {
-  [goerli.id]: 'https://api.thegraph.com/subgraphs/name/hotpotlabs/hotpot', // 新 id
+  [goerli.id]: 'https://api.thegraph.com/subgraphs/name/hotpotlabs/hotpot', // new id
   [mainnet.id]: '',
   [polygonMumbai.id]: 'https://api.thegraph.com/subgraphs/name/hotpotlabs/hotpot-mumbai',
   [polygon.id]: '',
   [bscTestnet.id]: '',
-  [bsc.id]: 'https://api.thegraph.com/subgraphs/name/hotpotlabs/hotpot-bnb', // 新 id
+  [bsc.id]: 'https://api.thegraph.com/subgraphs/name/hotpotlabs/hotpot-bnb', // new id
   [zkSyncTestnet.id]: 'https://api.thegraph.com/subgraphs/name/wonderfulfull/test',
   [zkSync.id]: 'https://api.studio.thegraph.com/query/45232/hotpot-zk/v0.0.1',
   [arbitrumGoerli.id]: '',

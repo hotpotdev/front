@@ -11,6 +11,7 @@ import ChartSkeleton from './chart-skeleton';
 
 import { FmtAmount } from '@/libs/common/format';
 import { format } from 'date-fns';
+import { useTranslation } from 'next-export-i18n';
 
 
 type VolumeChartProps = {
@@ -30,7 +31,7 @@ export type ItemType = {
 }
 
 const VolumeChart = ({ token, intervalType, interval, ...attrs }: VolumeChartProps) => {
-
+const { t } = useTranslation()
   const tokenChainId = useMemo(() => NetToChainId(token.net), [token.net])
   const tokenEndpoint = useMemo(() => tokenChainId ? GRAPHQL_API[tokenChainId] : undefined, [tokenChainId])
   const lastTimestamp = useMemo(() => Math.floor(new Date().getTime() / 1e3), []);
@@ -131,21 +132,21 @@ const VolumeChart = ({ token, intervalType, interval, ...attrs }: VolumeChartPro
               return (
                 <div className="rounded bg-base-200 p-4 shadow text-xs">
                   <div className="space-x-1">
-                    <span>Time:</span>
+                    <span>{t('time')}:</span>
                     <span>
                       {format(new Date(item?.timestamp ?? 0), intervalType === 'hour' ? 'MM/dd/yyyy HH:mm:ss' : 'MM/dd/yyyy')}
                     </span>
                   </div>
                   <div className="space-x-1">
-                    <span>OpenPrice:</span>
+                    <span>{t('openprice')}:</span>
                     <span>{FmtAmount(item?.openPrice, 6)}</span>
                   </div>
                   <div className="space-x-1">
-                    <span>Low:</span>
+                    <span>{t('low')}:</span>
                     <span>{FmtAmount(item?.minPrice, 6)}</span>
                   </div>
                   <div className="space-x-1">
-                    <span>High:</span>
+                    <span>{t('high')}:</span>
                     <span>{FmtAmount(item?.maxPrice, 6)}</span>
                   </div>
                 </div>

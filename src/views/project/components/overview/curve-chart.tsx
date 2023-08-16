@@ -9,6 +9,7 @@ import type { Margin } from 'recharts/types/util/types';
 import { useBondingCurveChart } from '@/libs/sdk/hooks/useBondingCurve';
 import { IBondingCurveType, IExponentialParam, ILinearParam, ISquarerParam } from '@/libs/sdk/types/curve';
 import ChartSkeleton from './chart-skeleton';
+import { useTranslation } from 'next-export-i18n';
 
 
 
@@ -25,7 +26,7 @@ const CurveChart = ({ margin = {
   left: 10,
   bottom: 10
 }, bondingCurveType, params, supplyExpect, ...attrs }: CurveChartProps) => {
-
+  const { t } = useTranslation()
   const { chartData } = useBondingCurveChart({
     type: bondingCurveType,
     params: params,
@@ -64,11 +65,11 @@ const CurveChart = ({ margin = {
               return (
                 <div className="rounded bg-base-200 p-4 shadow">
                   <div className="space-x-1 flex items-center">
-                    <span>Supply:</span>
+                    <span>{t('supply')}</span>
                     <span>{FmtAmount(props?.label)}</span>
                   </div>
                   <div className="space-x-1 flex items-center">
-                    <span>Price:</span>
+                    <span>{t('price')}</span>
                     <span>{FmtAmount(props.payload?.[0]?.value, 6)}</span>
                   </div>
                 </div>

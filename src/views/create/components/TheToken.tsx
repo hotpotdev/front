@@ -19,11 +19,13 @@ import type { IBondingCurveType } from '@/libs/sdk/types/curve';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { StopScrollFun } from '@/utils';
 import { InputStringNumberWithCommas, InputStringToStringNumber } from '@/libs/common/utils';
+import { useTranslation } from 'next-export-i18n';
 
 type TheTokenProps = React.HTMLAttributes<HTMLElement> & {
 
 }
 const TheToken = ({ ...attrs }: TheTokenProps) => {
+  const { t } = useTranslation()
   const expMinPrice = 0.001;
   const { setValue, register, formState: { errors }, watch, resetField, trigger } = useFormContext<IFormData>();
   const [tokenType, isSbt, bondingCurveType, raisingToken, supplyExpect = 0, priceExpect = 0, initPrice = 0] = watch([
@@ -65,13 +67,13 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
 
   return (
     <div {...attrs} className={clsx('space-y-4 md:space-y-8', attrs.className)}>
-      <h3 className="mb-12 text-left text-2xl font-bold">Token</h3>
+      <h3 className="mb-12 text-left text-2xl font-bold">{t('token')}</h3>
       <div className="w-full space-y-4 md:space-y-6">
-        <h4 className="font-bold text-sm md:text-base text-base-content/80">Token Type</h4>
+        <h4 className="font-bold text-sm md:text-base text-base-content/80">{t('token-type')}</h4>
         <RadioCard
           checked={tokenType === 'ERC20'}
           title={'ERC-20'}
-          desc={'Use ERC-20 standard token. Earn Trading tax.'}
+          desc={t('use-erc-20-info')}
           onClick={setStandardToken}
         />
         {/* <RadioCard
@@ -82,11 +84,11 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
         /> */}
       </div>
       <div className="space-y-4 md:space-y-6">
-        <h4 className="font-bold md:text-xl text-base-content/80">Parameter Setting</h4>
+        <h4 className="font-bold md:text-xl text-base-content/80">{t('parameter-setting')}</h4>
         <div className="w-full space-y-4">
           <div className="flex justify-between">
             <label htmlFor="expect-token-supply" className="block text-sm font-bold md:text-base">
-              Expect Token Supply
+              {t('expect-token-supply-input')}
               <span>*</span>
             </label>
             <span className="text-sm text-accent" id="email-optional"></span>
@@ -94,9 +96,9 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
           <div className="mt-1 relative">
             <input
               {...register('supplyExpect', {
-                required: { value: true, message: 'Please set supply expect' },
-                min: { value: 1000, message: 'Please set token supply between 1,000 - 99,999,999,999,999' },
-                max: { value: 99999999999999, message: 'Please set token supply between 1,000 - 99,999,999,999,999' },
+                required: { value: true, message: t('please-token-supply-required-info') },
+                min: { value: 1000, message: `${t('expect-token-supply-min-info')} 1,000 - 99,999,999,999,999` },
+                max: { value: 99999999999999, message: `${t('expect-token-supply-min-info')} 1,000 - 99,999,999,999,999` },
                 setValueAs: v => v ? Number(InputStringToStringNumber(v.toString().replace(/^(00)+/g, ''), 18)) : v,
                 onChange(e) {
                   const val = e.target.value.replaceAll(',', '').replace(/^(00)+/g, '');
@@ -124,7 +126,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
             }
             <p className="mt-1 text-sm text-error">{errors.supplyExpect?.message}</p>
             <p className="mt-1 text-sm text-accent">
-              Token don’t have the mathematical limitation of token supply here,so aim high.
+              {t('expect-supply-info')}
             </p>
           </div>
         </div>
@@ -133,7 +135,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
           <div className="w-1/2">
             <div className="flex justify-between">
               <label htmlFor="expect-token-price" className="block text-sm font-bold md:text-base">
-                Expect Token Price
+                {t('expect-token-price-input')}
                 <span>*</span>
               </label>
               <span className="text-sm text-accent" id="email-optional"></span>
@@ -141,9 +143,9 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
             <div className="relative mt-1">
               <input
                 {...register('priceExpect', {
-                  required: { value: true, message: 'Please set price expect' },
-                  min: { value: 0, message: 'Please set price expect 0 at least' },
-                  max: { value: 99999999999999, message: 'Please set price expect 99999999999999 at most' },
+                  required: { value: true, message: t('expext-token-price-required') },
+                  min: { value: 0, message: t('expext-token-price-min') },
+                  max: { value: 99999999999999, message: t('expect-token-price-max') },
                   setValueAs: v => v ? Number(InputStringToStringNumber(v.toString().replace(/^(00)+/g, ''), 18)) : v,
                   onChange(e) {
                     const val = e.target.value.replaceAll(',', '').replace(/^(00)+/g, '');
@@ -220,7 +222,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
             <p className="mt-1 text-sm text-accent"></p>
           </div> */}
           <div className="w-1/2 space-y-2">
-            <h4 className="text-sm font-bold">FDV</h4>
+            <h4 className="text-sm font-bold">{t('fdv')}</h4>
             <div className="whitespace-pre-wrap break-words uppercase flex">
               <NumberView number={tvl * price} before="~$" />
             </div>
@@ -230,7 +232,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
           <div className="w-full">
             <div className="flex justify-between">
               <label htmlFor="initial-token-price" className="block text-sm font-bold md:text-base">
-                Initial Token Price
+                {t('initial-token-price')}
               </label>
               <span className="text-sm text-accent" id="email-optional"></span>
             </div>
@@ -239,7 +241,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
                 {...register('initPrice', {
                   required: {
                     value: true,
-                    message: 'Please set init price address'
+                    message: t('please-init-price')
                   },
                   min: { value: minInitPrice, message: '' },
                   max: { value: maxInitPrice, message: '' },
@@ -313,7 +315,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
           </div>
         </div>
         <div className="space-y-4 md:space-y-6">
-          <h4 className="font-bold text-sm md:text-base">Curve Setting</h4>
+          <h4 className="font-bold text-sm md:text-base">{t('curve-setting')}</h4>
           <PillTab
             items={['Linear', 'Exponential', 'Squareroot']} // squareroot
             initIndex={0}
@@ -325,7 +327,7 @@ const TheToken = ({ ...attrs }: TheTokenProps) => {
           <div className="h-96">
             {
               initPrice <= 0 && bondingCurveType === 'exponential' ?
-                <p className="text-base-content/60 text-center py-6">Initial token price can not be 0</p>
+                <p className="text-base-content/60 text-center py-6">{t('initial-token-price-info')}</p>
                 : <TheChart className="h-[25rem] w-full min-w-[10rem]" />
             }
           </div>

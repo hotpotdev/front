@@ -17,12 +17,15 @@ import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
+import { useTranslation } from 'next-export-i18n';
+
 
 type TheActivityListProps = React.HTMLAttributes<HTMLElement> & {
 
 }
 
 const TheActivityList = ({ ...attrs }: TheActivityListProps) => {
+  const { t } = useTranslation()
   const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.Desc)
   const [orderBy, setOrderBy] = useState<MintBurnEntity_OrderBy>(MintBurnEntity_OrderBy.Timestamp)
   const taggerDirection = () => {
@@ -62,13 +65,14 @@ const TheActivityList = ({ ...attrs }: TheActivityListProps) => {
     if (!mintBurns) await refetch()
   }
   const { push } = useRouter()
+  const { locale } = useLocale()
   const onClickProject = async (index: number) => {
-    await push(`/project?id=${index}`)
+    await push(`/project?id=${index}&lang=${locale}`)
   }
   const Empty = () => {
     return (
       <div className="flex w-full flex-col items-center justify-center space-y-3 pt-10 text-gray-300">
-        <p>Empty</p>
+        <p>{t('empty')}</p>
       </div>
     );
   };
@@ -97,18 +101,18 @@ const TheActivityList = ({ ...attrs }: TheActivityListProps) => {
                   setOrderBy(MintBurnEntity_OrderBy.TokenName)
                   taggerDirection()
                 }}>
-                <span>Project</span>
+                <span>{t('project')}</span>
                 <ArrowsUpDownIcon className="w-4 h-4" />
               </div>
             </th>
-            <th>Chain</th>
+            <th>{t('chain')}</th>
             <th>
               <div className="flex space-x-1 cursor-pointer"
                 onClick={() => {
                   setOrderBy(MintBurnEntity_OrderBy.Direction)
                   taggerDirection()
                 }}>
-                <span>Action</span>
+                <span>{t('action')}</span>
                 <ArrowsUpDownIcon className="w-4 h-4" />
               </div>
             </th>
@@ -119,7 +123,7 @@ const TheActivityList = ({ ...attrs }: TheActivityListProps) => {
                   setOrderBy(MintBurnEntity_OrderBy.NativeAmount)
                   taggerDirection()
                 }}>
-                <span>Anchor Token</span>
+                <span>{t('anchor-token')}</span>
                 <ArrowsUpDownIcon className="w-4 h-4" />
               </div>
             </th>
@@ -130,18 +134,18 @@ const TheActivityList = ({ ...attrs }: TheActivityListProps) => {
                   setOrderBy(MintBurnEntity_OrderBy.Erc20Amount)
                   taggerDirection()
                 }}>
-                <span>Token Amount</span>
+                <span>{t('token-amount')}</span>
                 <ArrowsUpDownIcon className="w-4 h-4" />
               </div>
             </th>
-            <th>Tx Hash</th>
+            <th>{t('tx-hash')}</th>
             <th>
               <div className="flex space-x-1 cursor-pointer"
                 onClick={() => {
                   setOrderBy(MintBurnEntity_OrderBy.Timestamp)
                   taggerDirection()
                 }}>
-                <span>Time</span>
+                <span>{t('time')}</span>
                 <ArrowsUpDownIcon className="w-4 h-4" />
               </div>
             </th>

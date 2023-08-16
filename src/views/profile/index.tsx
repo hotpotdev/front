@@ -10,12 +10,14 @@ import TheProjectsCreated from './components/TheProjectsCreated';
 import NumberView from '@/components/format-view/number-view';
 import UserAvatar from '@/components/avatar/user-avatar';
 import useChain from '@/hooks/useChain';
+import { useTranslation } from 'next-export-i18n';
 
 type ProfileViewProps = React.HTMLAttributes<HTMLElement> & {
 
 }
 
 const ProfileView = ({ ...attrs }: ProfileViewProps) => {
+  const { t } = useTranslation()
   const { address } = useAccount()
   const { chain } = useChain()
   const [tabIndex, setTableIndex] = useState(0)
@@ -27,7 +29,7 @@ const ProfileView = ({ ...attrs }: ProfileViewProps) => {
         <div className=" flex flex-col justify-center">
           <AddressView address={address} className="" showShare={true} />
           <div className="text-xs flex space-x-2">
-            <b>Balance:</b>
+            <b>{t('balance')}:</b>
             <NumberView number={balance?.formatted} />
             <span> {chain.nativeCurrency.symbol}</span>
           </div>
@@ -38,17 +40,17 @@ const ProfileView = ({ ...attrs }: ProfileViewProps) => {
           className={clsx("tab tab-bordered", tabIndex === 0 && 'tab-active')}
           onClick={() => {
             setTableIndex(0)
-          }}>Activity</button>
+          }}>{t('activity')}</button>
         <button type="button"
           className={clsx("tab tab-bordered", tabIndex === 1 && 'tab-active')}
           onClick={() => {
             setTableIndex(1)
-          }}>Projects Owned  </button>
+          }}>{t('projects-owned')}  </button>
         <button type="button"
           className={clsx("tab tab-bordered ", tabIndex === 2 && 'tab-active')}
           onClick={() => {
             setTableIndex(2)
-          }}>Projects Created</button>
+          }}>{t('projects-created')}</button>
       </div>
       {/* table */}
       <div className="overflow-x-hidden">

@@ -21,7 +21,7 @@ const SwitchChainModal = ({ ...attrs }: SwitchChainModalProps) => {
   const unsupported = useMemo(() => chains.find(item => item.id === walletChain?.id) === undefined, [walletChain?.id, chains])
 
   useEffect(() => {
-    if (isConnected) setIsChainModalOpen(unsupported) // 让用户切换网络
+    if (isConnected) setIsChainModalOpen(unsupported)
     else setIsChainModalOpen(false)
   }, [isConnected, setIsChainModalOpen, unsupported])
 

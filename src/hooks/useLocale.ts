@@ -4,6 +4,8 @@ import { persist } from 'zustand/middleware'
 import { shallow } from 'zustand/shallow'
 
 import { APP_DIR, APP_I18N } from '@/conf'
+import { useLanguageQuery } from 'next-export-i18n'
+import { SetSearchParam } from '@/libs/common/navigator'
 
 // save key
 export const LocaleSaveKey = 'locale'
@@ -38,6 +40,7 @@ export type useLocaleProps = {}
 const useLocale = ({ }: useLocaleProps = {}) => {
   const { locale, setLocale, direction, setDirection } = useLocaleStore(state => ({ ...state }), shallow)
   const ref = useRef(true)
+  const [query] = useLanguageQuery();
 
   const switchLocale = useCallback(
     (lang: string) => {
@@ -45,6 +48,7 @@ const useLocale = ({ }: useLocaleProps = {}) => {
         document.documentElement.setAttribute('lang', lang)
       }
       setLocale(lang)
+      SetSearchParam('lang',lang)
     },
     [setLocale]
   )

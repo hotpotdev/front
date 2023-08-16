@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useTranslation } from 'next-export-i18n';
 
 export type SliPillProps = {
   sli: number[];
@@ -7,8 +8,9 @@ export type SliPillProps = {
   onSelected?: (item: number, index: number) => void;
   formatter?: (item: number, index: number) => string;
 } & React.HTMLAttributes<HTMLElement>;
-// 滑点设置
+
 const SliPill = ({ sli, initIndex = 0, onSelected, formatter, selectValue = undefined, ...attrs }: SliPillProps) => {
+  const { t } = useTranslation()
   const defFormatter = (item: number, index: number) => `${item * 1e2}%`;
   const onClick = (e: any, index: number) => {
     onSelected && onSelected(sli[index], index);

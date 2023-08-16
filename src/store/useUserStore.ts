@@ -4,8 +4,8 @@ import { combine, persist } from 'zustand/middleware'
 const name = 'user'
 
 const initialState = {
-  address: '', // 地址
-  token: '', // token
+  address: '',
+  token: '',
 }
 
 type UserState = typeof initialState

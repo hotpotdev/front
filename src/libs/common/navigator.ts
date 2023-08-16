@@ -1,5 +1,5 @@
 /**
- * 获取系统语言
+ *
  * @returns {string|undefined}
  */
 export const GetLocale = (): string | undefined => {
@@ -8,7 +8,7 @@ export const GetLocale = (): string | undefined => {
 }
 
 /**
- * 获取系统主题
+ *
  * @returns {'light'|'dark'|undefined}
  */
 export const GetTheme = (): 'light' | 'dark' | undefined => {
@@ -19,7 +19,7 @@ export const GetTheme = (): 'light' | 'dark' | undefined => {
 }
 
 /**
- * 滚动到id位置
+ *
  * @param id
  */
 export const ScrollToAnchor = (id: string) => {
@@ -27,7 +27,7 @@ export const ScrollToAnchor = (id: string) => {
 }
 
 /**
- * 获取 search 参数
+ * search
  * @param names
  * @returns
  */
@@ -43,7 +43,7 @@ export const GetSearchParams = (names: string[]) => {
 }
 
 /**
- * 设置 search 参数
+ *  search
  * @param name
  * @param value
  */
@@ -57,7 +57,7 @@ export const SetSearchParam = (name: string, value: string) => {
 
 
 /**
- * [zh] os 判断
+ * [zh] os
  * @returns  {isTablet,isiPhone,isAndroid,isPc,isChrome}
  */
 export function OS() {

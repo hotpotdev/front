@@ -1,10 +1,12 @@
 import { MenuIcon, HotpotLogoIcon } from '@/assets';
 import BackTop from '@/components/back-top';
 import ConnectWallet from '@/components/connect-wallet';
+import SwitchLocale from '@/components/switch-locale';
 import SwitchTheme from '@/components/switch-theme';
 import { APP_NAME, LAYOUT_DRAWER_ID, LAYOUT_ID } from '@/conf';
-import useLocale from '@/hooks/useLocale';
+
 import clsx from 'clsx';
+import { useLanguageQuery, useTranslation } from 'next-export-i18n';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef, type PropsWithChildren, useCallback } from 'react';
@@ -15,6 +17,8 @@ type TheLandingLayoutProps = React.HTMLAttributes<HTMLElement> & PropsWithChildr
 }>;
 
 const TheLandingLayout = ({ children, ...attrs }: TheLandingLayoutProps) => {
+  const { t } = useTranslation()
+  const [query] = useLanguageQuery();
   const view = useRef(null);
   const { y } = useScroll(view);
   const router = useRouter()
@@ -35,20 +39,17 @@ const TheLandingLayout = ({ children, ...attrs }: TheLandingLayoutProps) => {
             <label htmlFor={LAYOUT_DRAWER_ID} className="flex-none md:hidden btn btn-sm btn-ghost text-base">
               <MenuIcon className="w-8 h-8 stroke-current " />
             </label>
-            {/* <LocaleLink href='/' className="space-x-2">
-              <HotpotLogoIcon className="w-8 h-8 fill-primary stroke-primary" />
-              <h1 className="hidden">{t('title')}</h1>
-            </LocaleLink> */}
             <div className="space-x-2">
               <HotpotLogoIcon className="w-8 h-8 fill-primary stroke-primary" />
               <h1 className="hidden">{APP_NAME}</h1>
             </div>
             <div className="flex-1 hidden md:flex items-center space-x-3 md:space-x-12 lg:space-x-20 font-semibold">
-              <Link href='/projects' className={clsx('hover:text-primary', isActive('/projects') && 'text-primary')}>Project List</Link>
-              <Link href='/' className={clsx('hover:text-primary', isActive('/') && 'text-primary')}>Create Project</Link>
+              <Link href={{pathname: '/projects', query}} className={clsx('hover:text-primary', isActive('/projects') && 'text-primary')}>{t('project-list')}</Link>
+              <Link href={{pathname: '/', query,}} className={clsx('hover:text-primary', isActive('/') && 'text-primary')}>{t('create-proje')}</Link>
             </div>
             <div className="flex-1 justify-end items-center space-x-3 md:space-x-6">
               <ConnectWallet className="rounded-2xl" />
+              <SwitchLocale/>
               <SwitchTheme />
             </div>
           </div>
@@ -60,7 +61,7 @@ const TheLandingLayout = ({ children, ...attrs }: TheLandingLayoutProps) => {
             'w-full container mx-auto border-t border-border1 py-12 mt-16 text-sm text-center flex justify-between items-center',
           )}
         >
-          <p>Copyright © {new Date().getUTCFullYear()} {APP_NAME} labs</p>
+          <p>{t('copyright')} © {new Date().getUTCFullYear()} {APP_NAME} {t('labs')}</p>
         </footer>
       </div>
       <aside className="drawer-side">
@@ -68,10 +69,10 @@ const TheLandingLayout = ({ children, ...attrs }: TheLandingLayoutProps) => {
         <ul className="menu p-4 w-80 h-full bg-base-200 ">
           {/* Sidebar content here */}
           <li>
-            <Link href='/projects' className={clsx('hover:text-primary', isActive('/projects') && 'text-primary')}>Project List</Link>
+            <Link href={{pathname: '/projects', query}} className={clsx('hover:text-primary', isActive('/projects') && 'text-primary')}>{t('project-list')}</Link>
           </li>
           <li>
-            <Link href='/' className={clsx('hover:text-primary', isActive('/') && 'text-primary')}>Create Project</Link>
+            <Link href={{pathname: '/', query}} className={clsx('hover:text-primary', isActive('/') && 'text-primary')}>{t('create-proje')}</Link>
           </li>
         </ul>
       </aside>

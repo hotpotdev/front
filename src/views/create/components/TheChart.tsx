@@ -1,4 +1,4 @@
-import NumberView from '@/components/format-view/number-view';
+
 import { FmtAmount } from '@/libs/common/format';
 import clsx from 'clsx';
 import { ResponsiveContainer, Tooltip, XAxis, YAxis, Area, AreaChart,Brush } from 'recharts';
@@ -9,6 +9,7 @@ import type { Margin } from 'recharts/types/util/types';
 import { IFormData } from '../type';
 import { ComputeBondingCurve } from '@/libs/sdk/utils/curve';
 import { useMemo } from 'react';
+import { useTranslation } from 'next-export-i18n';
 
 
 type TheChartProps = React.HTMLAttributes<HTMLElement> & {
@@ -21,6 +22,7 @@ const TheChart = ({ margin = {
   left: 30,
   bottom: 10
 }, ...attrs }: TheChartProps) => {
+  const { t } = useTranslation()
   const { watch } = useFormContext<IFormData>();
   const [bondingCurveType, supplyExpect = 0, priceExpect = 0, initPrice = 0,raisingToken] = watch([
     'bondingCurveType',
@@ -66,12 +68,12 @@ const TheChart = ({ margin = {
               return (
                 <div className="rounded bg-base-200 p-4 shadow">
                   <div className="space-x-1 flex items-center">
-                    <span>Supply:</span>
+                    <span>{t('supply')}</span>
                     <span>{FmtAmount(props?.label)}</span>
                     <span>{raisingToken.symbol}</span>
                   </div>
                   <div className="space-x-1 flex items-center">
-                    <span>Price:</span>
+                    <span>{t('price')}</span>
                     <span>{FmtAmount(props.payload?.[0]?.value,6)}</span>
                     <span>{raisingToken.symbol}</span>
                   </div>

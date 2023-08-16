@@ -11,12 +11,14 @@ import Pagination from '@/components/pagination';
 import { SUPPORT_CHAIN } from '@/conf';
 import { ICounter } from '@/libs/sdk/hooks/useCounter';
 import { format } from 'date-fns';
+import { useTranslation } from 'next-export-i18n';
 
 type TokenListProps = React.HTMLAttributes<HTMLElement> & {
 
 }
 
 const TokenList = ({ ...attrs }: TokenListProps) => {
+  const { t } = useTranslation()
   const types = useMemo(() => new Array(SUPPORT_CHAIN.length).fill('TradeVolume', 0, SUPPORT_CHAIN.length), [])
   const { data: counterList, isLoading: isCounterLoading } = useAllCounterWhere({ types })
   const counters = useMemo(() => {
@@ -52,7 +54,7 @@ const TokenList = ({ ...attrs }: TokenListProps) => {
   const Empty = () => {
     return (
       <div className="flex w-full flex-col items-center justify-center space-y-3 pt-10 text-gray-300">
-        <p>Empty</p>
+        <p>{t('empty')}</p>
       </div>
     );
   };
@@ -75,13 +77,13 @@ const TokenList = ({ ...attrs }: TokenListProps) => {
         {/* head */}
         <thead>
           <tr>
-            <th>Project</th>
-            <th>Chain</th>
-            <th>Ticker</th>
-            <th>Total Volume</th>
-            <th>TVL</th>
-            <th>Contract</th>
-            <th>Create Time</th>
+            <th>{t('project')}</th>
+            <th>{t('chain')}</th>
+            <th>{t('ticker')}</th>
+            <th>{t('total-volume')}</th>
+            <th>{t('tvl')}</th>
+            <th>{t('contract')}</th>
+            <th>{t('create-time')}</th>
           </tr>
         </thead>
         <tbody>

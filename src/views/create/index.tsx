@@ -13,11 +13,11 @@ import ConnectWallet from '@/components/connect-wallet';
 import { useChainCertToken, useChainPlatform } from '@/hooks/useChainInfo';
 import type { IFormData } from './type';
 import customToast from '@/utils/customToast';
-import { parseAbi, zeroAddress } from 'viem'
+import { parseAbi, zeroAddress } from 'viem';
 import { useMintFirstAmount } from './hooks/useMintFirstAmount';
 import { ComputeBondingCurve, EncodeLaunchData } from '@/libs/sdk/utils/curve';
 import { ILaunchParam } from '@/libs/sdk/types/curve';
-import { getContract, writeContract, waitForTransaction } from 'wagmi/actions'
+import { getContract, writeContract, waitForTransaction } from 'wagmi/actions';
 import { UpLoadString, UploadFile } from '@/utils/ipfs';
 
 import { factoryAbi } from '@/libs/sdk/contracts/Factory';
@@ -27,6 +27,10 @@ import { useRouter } from 'next/router';
 import { IHotpot_Metadata } from '@/libs/types/metadata';
 import useChain from '@/hooks/useChain';
 
+import { useLanguageQuery, useTranslation, LanguageSwitcher } from 'next-export-i18n';
+import { useLocalStorage } from 'react-use';
+import useLocale from '@/hooks/useLocale';
+
 export enum CreateAction {
   Details,
   Token,
@@ -34,17 +38,17 @@ export enum CreateAction {
   Deploy
 }
 
-type CreateViewProps = React.HTMLAttributes<HTMLElement> & {
-
-}
+type CreateViewProps = React.HTMLAttributes<HTMLElement> & {};
 
 const CreateView = ({ ...attrs }: CreateViewProps) => {
-  const router = useRouter()
-  const { chain } = useChain()
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { locale } = useLocale();
+  const { chain } = useChain();
   const { isConnected, address: account } = useAccount();
-  const chanCertToken = useChainCertToken()
-  const [stepIndex, setStepIndex] = useState<CreateAction>(CreateAction.Details)
-  const steps = ['Details', 'Token', 'Setting', 'Deploy']
+  const chanCertToken = useChainCertToken();
+  const [stepIndex, setStepIndex] = useState<CreateAction>(CreateAction.Details);
+  const steps = [t('details'), t('token'), t('setting'), t('deploy')];
   const methods = useForm<IFormData>({
     mode: 'all',
     defaultValues: {
@@ -76,19 +80,63 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
     }
   });
 
-  const { setValue, formState: { errors }, trigger, watch } = methods;
-  const [logoFile, treasuryAddress, ownerAddress, raisingToken, isAccept] = watch(['logoFile', 'treasuryAddress', 'ownerAddress', 'raisingToken', 'isAccept'])
+  const {
+    setValue,
+    formState: { errors },
+    trigger,
+    watch
+  } = methods;
+  const [name, symbol, logoFile, treasuryAddress, ownerAddress, raisingToken, isAccept] = watch([
+    'name',
+    'symbol',
+    'logoFile',
+    'treasuryAddress',
+    'ownerAddress',
+    'raisingToken',
+    'isAccept'
+  ]);
 
   const isDisabled = useMemo(() => {
     switch (stepIndex) {
-      case CreateAction.Details: return Boolean(errors.name || errors.symbol || errors.description || errors.logoFile || !logoFile || errors.logoData) // owner
-      case CreateAction.Token: return Boolean(errors.supplyExpect || errors.priceExpect || errors.raisingToken || errors.initPrice)
-      case CreateAction.Setting: return Boolean(errors.mintAmount || errors.mintTaxRate || errors.burnTaxRate) // treasury
-      case CreateAction.Deploy: return Boolean(errors.isAccept || !isAccept)
+      case CreateAction.Details:
+        return Boolean(
+          errors.name ||
+            errors.symbol ||
+            errors.description ||
+            errors.logoFile ||
+            !name ||
+            !symbol ||
+            !logoFile ||
+            errors.logoData
+        ); // owner
+      case CreateAction.Token:
+        return Boolean(errors.supplyExpect || errors.priceExpect || errors.raisingToken || errors.initPrice);
+      case CreateAction.Setting:
+        return Boolean(errors.mintAmount || errors.mintTaxRate || errors.burnTaxRate); // treasury
+      case CreateAction.Deploy:
+        return Boolean(errors.isAccept || !isAccept);
     }
-  }, [stepIndex, errors.name, errors.symbol, errors.description, errors.logoFile, errors.logoData, errors.supplyExpect, errors.priceExpect, errors.raisingToken, errors.initPrice, errors.mintAmount, errors.mintTaxRate, errors.burnTaxRate, errors.isAccept, logoFile, isAccept])
+  }, [
+    stepIndex,
+    errors.name,
+    errors.symbol,
+    errors.description,
+    errors.logoFile,
+    errors.logoData,
+    errors.supplyExpect,
+    errors.priceExpect,
+    errors.raisingToken,
+    errors.initPrice,
+    errors.mintAmount,
+    errors.mintTaxRate,
+    errors.burnTaxRate,
+    errors.isAccept,
+    name,
+    symbol,
+    logoFile,
+    isAccept
+  ]);
 
-  // 修改管理和国库地址和launch 代币
   useEffect(() => {
     if (account && isConnected) {
       if (stepIndex === CreateAction.Deploy) {
@@ -99,35 +147,46 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
     }
   }, [account, chanCertToken, isConnected, ownerAddress, raisingToken, setValue, stepIndex, treasuryAddress]);
 
-
-  useEffect(() => {
-    trigger()
-  }, [trigger])
-
   const changeStep = (index: number) => {
     switch (index) {
-      case CreateAction.Details: trigger(['name', 'symbol', 'description', 'logoFile', 'logoData']); break;
-      case CreateAction.Token: trigger(['supplyExpect', 'priceExpect', 'raisingToken', 'initPrice']); break;
-      case CreateAction.Setting: trigger(['mintAmount', 'mintTaxRate', 'burnTaxRate']); break;
-      case CreateAction.Deploy: trigger(['isAccept']); break;
+      case CreateAction.Details:
+        trigger(['name', 'symbol', 'description', 'logoFile', 'logoData']);
+        break;
+      case CreateAction.Token:
+        trigger(['supplyExpect', 'priceExpect', 'raisingToken', 'initPrice']);
+        break;
+      case CreateAction.Setting:
+        trigger(['mintAmount', 'mintTaxRate', 'burnTaxRate']);
+        break;
+      case CreateAction.Deploy:
+        trigger(['isAccept']);
+        break;
     }
     if (!isDisabled) {
-      setStepIndex(index)
+      setStepIndex(index);
     }
     if (typeof window !== 'undefined' && document) {
-      const view = document.querySelector(`#${LAYOUT_ID}`)
+      const view = document.querySelector(`#${LAYOUT_ID}`);
       if (view) {
-        view.scrollTop = 0
+        view.scrollTop = 0;
       }
     }
-  }
+  };
   const prevStep = () => {
-    setStepIndex(stepIndex - 1)
-  }
+    setStepIndex(stepIndex - 1);
+  };
   const nextStep = () => {
-    changeStep(stepIndex + 1)
-  }
-  const { bondingCurveType, initPrice = 0, priceExpect = 0, supplyExpect = 0, mintTaxRate = 0, mintAmount = 0, ...fromData } = watch()
+    changeStep(stepIndex + 1);
+  };
+  const {
+    bondingCurveType,
+    initPrice = 0,
+    priceExpect = 0,
+    supplyExpect = 0,
+    mintTaxRate = 0,
+    mintAmount = 0,
+    ...fromData
+  } = watch();
   const { payAmount } = useMintFirstAmount({
     bondingCurveType,
     supplyExpect,
@@ -135,13 +194,16 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
     initPrice,
     mintTaxRate,
     mintAmount
-  })
-  const { params } = useMemo(() => ComputeBondingCurve({ type: bondingCurveType, supplyExpect, priceExpect, initPrice }), [bondingCurveType, initPrice, priceExpect, supplyExpect])
-  const { data: platform } = useChainPlatform()
+  });
+  const { params } = useMemo(
+    () => ComputeBondingCurve({ type: bondingCurveType, supplyExpect, priceExpect, initPrice }),
+    [bondingCurveType, initPrice, priceExpect, supplyExpect]
+  );
+  const { data: platform } = useChainPlatform();
   const { data: walletClient } = useWalletClient({ chainId: chain.id });
-  const factoryAddress = useMemo(() => platform?.addr, [platform])
+  const factoryAddress = useMemo(() => platform?.addr, [platform]);
 
-  const [isDeployLoading, setIsDeployLoading] = useState(false)
+  const [isDeployLoading, setIsDeployLoading] = useState(false);
 
   const uploadMetadataHandler = async (): Promise<string> => {
     try {
@@ -171,11 +233,11 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
         ]
       };
       const metadataUrl = await UpLoadString(JSON.stringify(metadataObj), `${fromData.name}.json`);
-      return Promise.resolve(metadataUrl as string || '')
+      return Promise.resolve((metadataUrl as string) || '');
     } catch (error) {
-      return Promise.reject('upload metadata to ipfs error!')
+      return Promise.reject(t('upload-metad-error'));
     }
-  }
+  };
 
   const approveHandler = async () => {
     if (walletClient && factoryAddress && fromData.raisingToken.address) {
@@ -187,24 +249,24 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
           // @ts-ignore
           walletClient,
           args: [factoryAddress as `0x${string}`, payAmount ?? 0n]
-        })
-        await waitForTransaction({ hash: result.hash })
+        });
+        await waitForTransaction({ hash: result.hash });
       } catch (error) {
-        return Promise.reject(error)
+        return Promise.reject(error);
       }
     } else {
       return Promise.reject({
-        shortMessage: 'Is not connect wallet!'
-      })
+        shortMessage: t('is-not-connect')
+      });
     }
-  }
+  };
 
   const launchHandler = async (metadataUrl: string) => {
     if (walletClient && factoryAddress) {
       const factoryContract = getContract({
         address: factoryAddress as `0x${string}`,
         abi: factoryAbi,
-        walletClient,
+        walletClient
       });
       const { calldata, value } = EncodeLaunchData({
         tokenType: fromData.tokenType,
@@ -219,171 +281,177 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
         isSbt: fromData.isSbt,
         raisingTokenAddress: fromData.raisingToken.address,
         params,
-        payAmount: payAmount ?? 0n,
-      } as ILaunchParam)
+        payAmount: payAmount ?? 0n
+      } as ILaunchParam);
       try {
-        const hash = await factoryContract.write.deployToken([calldata, value], { value })
-        await waitForTransaction({ hash })
+        const hash = await factoryContract.write.deployToken([calldata, value], { value });
+        await waitForTransaction({ hash });
       } catch (error) {
-        return Promise.reject(error)
+        return Promise.reject(error);
       }
     } else {
       return Promise.reject({
-        shortMessage: 'Is not connect wallet!'
-      })
+        shortMessage: t('is-not-connect')
+      });
     }
-  }
+  };
 
   const deployHandler = async () => {
     let isSuccess = true;
     let metadataUrl = '';
-    setIsDeployLoading(true)
+    setIsDeployLoading(true);
     try {
-      // // 上传 metadata
-      await customToast.promise(
-        uploadMetadataHandler(),
-        {
-          loading: 'Upload Metadata...',
-          success: (url) => {
-            metadataUrl = url;
-            return <b>Upload success !</b>
-          },
-          error: (e) => {
-            isSuccess = false;
-            return <b>Upload error: {e?.shortMessage}.</b>
-          }
+      await customToast.promise(uploadMetadataHandler(), {
+        loading: t('upload-metad-info'),
+        success: url => {
+          metadataUrl = url;
+          return <b>{t('upload-succe')}</b>;
+        },
+        error: e => {
+          isSuccess = false;
+          return (
+            <b>
+              {t('upload-error')} {e?.shortMessage}.
+            </b>
+          );
         }
-      )
-      // 授权代币
+      });
       if (mintAmount && mintAmount > 0 && isSuccess && fromData.raisingToken.address !== zeroAddress) {
-        await customToast.promise(
-          approveHandler(),
-          {
-            loading: 'Check Approve...',
-            success: () => {
-
-              return <b>Approve !</b>
-            },
-            error: (e) => {
-              isSuccess = false;
-              return <b>Approve error: {e?.shortMessage}.</b>
-            }
+        await customToast.promise(approveHandler(), {
+          loading: t('check-approv-info'),
+          success: () => {
+            return <b>{t('approve-info')}</b>;
+          },
+          error: e => {
+            isSuccess = false;
+            return (
+              <b>
+                {t('approve-erro')} {e?.shortMessage}.
+              </b>
+            );
           }
-        )
-      }
-      // 提交代码
-      if (isSuccess) {
-        await customToast.promise(
-          launchHandler(metadataUrl),
-          {
-            loading: 'Deploy Project...',
-            success: () => {
-              isSuccess = true
-              return <b>Deploy Success !</b>
-            },
-            error: (e) => {
-              return <b>Deploy error: {e?.shortMessage}.</b>
-            }
-          }
-        )
+        });
       }
       if (isSuccess) {
-        router.push(`/projects`)
+        await customToast.promise(launchHandler(metadataUrl), {
+          loading: t('deploy-proje-info'),
+          success: () => {
+            isSuccess = true;
+            return <b>{t('deploy-succe')}</b>;
+          },
+          error: e => {
+            return (
+              <b>
+                {t('deploy-error')} {e?.shortMessage}.
+              </b>
+            );
+          }
+        });
+      }
+      if (isSuccess) {
+        router.push(`/projects?lang=${locale}`);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-    setIsDeployLoading(false)
-  }
+    setIsDeployLoading(false);
+  };
 
   return (
     <main {...attrs} className={clsx('mx-auto max-w-screen-lg lg:my-16 space-y-12', attrs.className)}>
       <ul className="steps w-full">
-        {
-          steps.map((item, index) => (
-            <li key={`step-${item}`}
-              data-content=""
-              className={clsx('step after:!w-6 after:!h-6 before:!h-1 cursor-pointer', index <= stepIndex && 'step-primary before:!-ml-[calc(100%-1.5rem)] before:opacity-50', index < stepIndex && 'opacity-50')}
-              onClick={() => changeStep(index)}>{item}
-            </li>
-          ))
-        }
+        {steps.map((item, index) => (
+          <li
+            key={`step-${item}`}
+            data-content=""
+            className={clsx(
+              'step after:!w-6 after:!h-6 before:!h-1 cursor-pointer',
+              index <= stepIndex && 'step-primary before:!-ml-[calc(100%-1.5rem)] before:opacity-50',
+              index < stepIndex && 'opacity-50'
+            )}
+            onClick={() => changeStep(index)}
+          >
+            {item}
+          </li>
+        ))}
       </ul>
       <FormProvider {...methods}>
         <div className="w-full md:px-16">
-          <TheDetails className={clsx(
-            'transition-transform duration-500',
-            stepIndex === 0
-              ? 'h-auto w-auto translate-x-0 opacity-100'
-              : 'h-0 w-0 translate-x-[10rem] overflow-hidden opacity-0'
-          )} />
-          <TheToken className={clsx(
-            'transition-transform duration-500',
-            stepIndex === 1
-              ? 'h-auto w-auto translate-x-0 opacity-100'
-              : 'h-0 w-0  translate-x-[10rem] overflow-hidden opacity-0'
-          )} />
-          <TheSetting className={clsx(
-            'transition-transform duration-500',
-            stepIndex === 2
-              ? 'h-auto w-auto translate-x-0 opacity-100'
-              : 'h-0 w-0  translate-x-[10rem] overflow-hidden opacity-0'
-          )} />
-          <TheDeploy className={clsx(
-            'transition-transform duration-500',
-            stepIndex === 3
-              ? 'h-auto w-auto translate-x-0 opacity-100'
-              : 'h-0 w-0  translate-x-[10rem] overflow-hidden opacity-0'
-          )} />
+          <TheDetails
+            className={clsx(
+              'transition-transform duration-500',
+              stepIndex === 0
+                ? 'h-auto w-auto translate-x-0 opacity-100'
+                : 'h-0 w-0 translate-x-[10rem] overflow-hidden opacity-0'
+            )}
+          />
+          <TheToken
+            className={clsx(
+              'transition-transform duration-500',
+              stepIndex === 1
+                ? 'h-auto w-auto translate-x-0 opacity-100'
+                : 'h-0 w-0  translate-x-[10rem] overflow-hidden opacity-0'
+            )}
+          />
+          <TheSetting
+            className={clsx(
+              'transition-transform duration-500',
+              stepIndex === 2
+                ? 'h-auto w-auto translate-x-0 opacity-100'
+                : 'h-0 w-0  translate-x-[10rem] overflow-hidden opacity-0'
+            )}
+          />
+          <TheDeploy
+            className={clsx(
+              'transition-transform duration-500',
+              stepIndex === 3
+                ? 'h-auto w-auto translate-x-0 opacity-100'
+                : 'h-0 w-0  translate-x-[10rem] overflow-hidden opacity-0'
+            )}
+          />
         </div>
         {/*  */}
         <div className="md:px-16 flex justify-end">
           <div className="space-x-4 md:space-x-8 flex items-center">
-            {
-              stepIndex >= CreateAction.Token && (
-                <button
-                  onClick={() => prevStep()}
-                  type="button"
-                  className={clsx(
-                    'btn-primary btn btn-xs h-10 mx-auto inline-flex items-center font-bold normal-case disabled:border-base-100',
-                  )}
-                >
-                  <ArrowLeftIcon className="w-5 h-5" />
-                  <span>Prev</span>
-                </button>
-              )
-            }
-            {
-              stepIndex <= CreateAction.Setting ?
-                (
-                  <button
-                    onClick={() => nextStep()}
-                    disabled={isDisabled}
-                    type="button"
-                    className={clsx(
-                      'btn-primary btn btn-xs h-10 mx-auto inline-flex items-center font-bold normal-case disabled:border-base-100',
-                    )}
-                  >
-                    <span>Next</span>
-                    <ArrowRightIcon className="w-5 h-5" />
-                  </button>
-                )
-                : isConnected ? (
-                  <button
-                    onClick={() => deployHandler()}
-                    disabled={isDisabled || isDeployLoading}
-                    type="button"
-                    className={clsx(
-                      'btn-primary btn btn-xs h-10 mx-auto inline-flex items-center font-bold normal-case disabled:border-base-100',
-                    )}
-                  >
-                    {isDeployLoading && <span className="loading loading-spinner loading-sm"></span>}
-                    Deploy
-                  </button>
-                ) : (
-                  <ConnectWallet />
-                )
-            }
+            {stepIndex >= CreateAction.Token && (
+              <button
+                onClick={() => prevStep()}
+                type="button"
+                className={clsx(
+                  'btn-primary btn btn-xs h-10 mx-auto inline-flex items-center font-bold normal-case disabled:border-base-100'
+                )}
+              >
+                <ArrowLeftIcon className="w-5 h-5" />
+                <span>{t('prev')}</span>
+              </button>
+            )}
+            {stepIndex <= CreateAction.Setting ? (
+              <button
+                onClick={() => nextStep()}
+                disabled={isDisabled}
+                type="button"
+                className={clsx(
+                  'btn-primary btn btn-xs h-10 mx-auto inline-flex items-center font-bold normal-case disabled:border-base-100'
+                )}
+              >
+                <span>{t('next')}</span>
+                <ArrowRightIcon className="w-5 h-5" />
+              </button>
+            ) : isConnected ? (
+              <button
+                onClick={() => deployHandler()}
+                disabled={isDisabled || isDeployLoading}
+                type="button"
+                className={clsx(
+                  'btn-primary btn btn-xs h-10 mx-auto inline-flex items-center font-bold normal-case disabled:border-base-100'
+                )}
+              >
+                {isDeployLoading && <span className="loading loading-spinner loading-sm"></span>}
+                {t('deploy')}
+              </button>
+            ) : (
+              <ConnectWallet />
+            )}
           </div>
         </div>
       </FormProvider>
@@ -392,5 +460,3 @@ const CreateView = ({ ...attrs }: CreateViewProps) => {
 };
 
 export default CreateView;
-
-

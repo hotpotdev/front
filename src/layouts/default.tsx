@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react';
 
-// 默认布局
+// TheDefaultLayout
 const TheDefaultLayout = ({ children }: PropsWithChildren) => {
   return (
     <div className="h-full overflow-auto">

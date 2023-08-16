@@ -17,13 +17,14 @@ import { useFormContext } from 'react-hook-form';
 import { useDebounce } from 'ahooks';
 import { OrderDirection, TokenEntity_OrderBy } from '@/libs/sdk/types/graphql';
 import { ArrowsUpDownIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'next-export-i18n';
 
 type AllProjectProps = React.HTMLAttributes<HTMLElement> & {
 
 }
 
 const AllProject = ({ ...attrs }: AllProjectProps) => {
-
+  const { t } = useTranslation()
   const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.Desc)
   const [orderBy, setOrderBy] = useState<TokenEntity_OrderBy>(TokenEntity_OrderBy.LockValue)
   const taggerDirection = () => {
@@ -73,8 +74,9 @@ const AllProject = ({ ...attrs }: AllProjectProps) => {
     if (!tokens) await refetch()
   }
   const { push } = useRouter()
+  const { locale } = useLocale()
   const onClickProject = async (index: number) => {
-    await push(`/project?id=${index}`)
+    await push(`/project?id=${index}&lang=${locale}`)
   }
 
   const { watch } = useFormContext();
@@ -103,7 +105,7 @@ const AllProject = ({ ...attrs }: AllProjectProps) => {
   const Empty = () => {
     return (
       <div className="flex w-full flex-col items-center justify-center space-y-3 pt-10 text-gray-300">
-        <p>Empty</p>
+        <p>{t('empty')}</p>
       </div>
     );
   };
@@ -132,23 +134,23 @@ const AllProject = ({ ...attrs }: AllProjectProps) => {
                   setOrderBy(TokenEntity_OrderBy.Name)
                   taggerDirection()
                 }}>
-                <span>Project</span>
+                <span>{t('project')}</span>
                 <ArrowsUpDownIcon className="w-4 h-4" />
               </div>
             </th>
-            <th>Chain</th>
+            <th>{t('chain')}</th>
             <th>
               <div className="flex space-x-1 cursor-pointer"
                 onClick={() => {
                   setOrderBy(TokenEntity_OrderBy.Symbol)
                   taggerDirection()
                 }}>
-                <span>Ticker</span>
+                <span>{t('ticker')}</span>
                 <ArrowsUpDownIcon className="w-4 h-4" />
               </div>
             </th>
             <th>
-              Total Volume
+              {t('total-volume')}
             </th>
             <th>
               <div className="flex space-x-1 cursor-pointer"
@@ -156,18 +158,18 @@ const AllProject = ({ ...attrs }: AllProjectProps) => {
                   setOrderBy(TokenEntity_OrderBy.LockValue)
                   taggerDirection()
                 }}>
-                <span>TVL</span>
+                <span>{t('tvl')}</span>
                 <ArrowsUpDownIcon className="w-4 h-4" />
               </div>
             </th>
-            <th>Contract</th>
+            <th>{t('contract')}</th>
             <th>
               <div className="flex space-x-1 cursor-pointer"
                 onClick={() => {
                   setOrderBy(TokenEntity_OrderBy.CreateTimestamp)
                   taggerDirection()
                 }}>
-                <span>Create Time</span>
+                <span>{t('create-time')}</span>
                 <ArrowsUpDownIcon className="w-4 h-4" />
               </div>
             </th>

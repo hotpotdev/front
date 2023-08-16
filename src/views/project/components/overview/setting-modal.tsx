@@ -9,10 +9,12 @@ import { tokenAbi } from '@/libs/sdk/contracts/Token'
 import customToast from '@/utils/customToast'
 import { useForm } from 'react-hook-form'
 import useChain from '@/hooks/useChain'
+import { useTranslation } from 'next-export-i18n'
 
 type SettingModalProps = React.HTMLAttributes<HTMLElement> & {}
 
 const SettingModal = ({ ...attrs }: SettingModalProps) => {
+  const { t } = useTranslation()
   const isSettingModalOpen = useProjectStore((state) => state.isSettingModalOpen)
   const setIsSettingModalOpen = useProjectStore((state) => state.setIsSettingModalOpen)
   const token = useProjectStore((state) => state.token)
@@ -75,12 +77,12 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
     if (token && newTreasury && token?.treasury.toUpperCase() != newTreasury.toUpperCase() && writeTreasury) {
       try {
         await customToast.promise(writeTreasury(), {
-          loading: 'Treasury Changing...',
+          loading: `${t('treasury-changing')}...`,
           success: () => {
-            return <b>Treasury Change success !</b>
+            return <b>{t('treasury-changing-success')}</b>
           },
           error: (e) => {
-            return <b>Treasury Change error: {e?.shortMessage}.</b>
+            return <b>{t('treasury-changing-error')} {e?.shortMessage}.</b>
           },
         })
       } catch (error) {
@@ -96,12 +98,12 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
     if ((token?.mintTax != newMintTaxRate || token?.burnTax != newBurnTaxRate) && writeTaxRate) {
       try {
         await customToast.promise(writeTaxRate(), {
-          loading: 'TaxRate Changing...',
+          loading: t('taxrate-changing-loading'),
           success: () => {
-            return <b>TaxRate Change success !</b>
+            return <b>{t('taxrate-changing-success')}</b>
           },
           error: (e) => {
-            return <b>TaxRate Change error: {e?.shortMessage}.</b>
+            return <b>{t('taxrate-changing-error')} {e?.shortMessage}.</b>
           },
         })
       } catch (error) {
@@ -117,12 +119,12 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
     if (token?.admin.toUpperCase() != newAdmin?.toUpperCase() && writeAdmin) {
       try {
         await customToast.promise(writeAdmin(), {
-          loading: 'Owner Changing...',
+          loading: t('owner-changing-loading'),
           success: () => {
-            return <b>Owner Change success !</b>
+            return <b>{t('owner-change-success')}</b>
           },
           error: (e) => {
-            return <b>Owner Change error: {e?.shortMessage}.</b>
+            return <b>{t('owner-change-error')} {e?.shortMessage}.</b>
           },
         })
       } catch (error) {
@@ -154,7 +156,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
               <ArrowLeftIcon className="h-5 w-5  text-xl duration-300 hover:-translate-x-1" />
             </button>
             <dl>
-              <dt className="font-bold">Manage</dt>
+              <dt className="font-bold">{t('manage')}</dt>
               <dd className="text-xs text-opacity-90">
                 <AddressView address={token?.addr} showShare={true} />
               </dd>
@@ -164,7 +166,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
           <div className={clsx('collapse overflow-visible px-2', editTreasury ? ' collapse-open' : 'collapse-close')}>
             <div className="collapse-title flex min-h-0 items-end justify-between p-0">
               <dl className="space-y-2">
-                <dt className="text-accent">Treasury Address</dt>
+                <dt className="text-accent">{t('treasury-address-input')}</dt>
                 <dd className="font-bold">
                   <AddressView address={token?.treasury} showShare={true}  />
                 </dd>
@@ -177,7 +179,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
                   disabled={isLoadingTreasury}
                 >
                   {isLoadingTreasury && <span className="loading loading-spinner loading-xs"></span>}
-                  Confirm
+                  {t('confirm')}
                 </button>
               ) : (
                 <button
@@ -185,7 +187,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
                   className="btn-sm btn btn-outline flex items-center normal-case"
                   onClick={() => setEditTreasury(true)}
                 >
-                  Modify
+                  {t('modify')}
                 </button>
               )}
             </div>
@@ -216,9 +218,9 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
           <div className={clsx('collapse overflow-visible  px-2', editRate ? ' collapse-open' : 'collapse-close')}>
             <div className="collapse-title flex min-h-0 items-end justify-between p-0">
               <dl className="space-y-2">
-                <dt className="text-accent">Tax Rate</dt>
+                <dt className="text-accent">{t('tax-rate')}</dt>
                 <dd className="font-bold">
-                  Mint {(viewToken?.mintTax ?? 0) * 1e2} % | Burn {(viewToken?.burnTax ?? 0) * 1e2} %
+                  {t('mint')} {(viewToken?.mintTax ?? 0) * 1e2} % | {t('burn')} {(viewToken?.burnTax ?? 0) * 1e2} %
                 </dd>
               </dl>
               {editRate ? (
@@ -229,7 +231,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
                   disabled={isLoadingTaxRate}
                 >
                   {isLoadingTaxRate && <span className="loading loading-spinner loading-xs"></span>}
-                  Confirm
+                  {t('confirm')}
                 </button>
               ) : (
                 <button
@@ -237,7 +239,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
                   className="btn-outline btn-sm btn flex items-center normal-case"
                   onClick={() => setEditRate(true)}
                 >
-                  Modify
+                  {t('modify')}
                 </button>
               )}
             </div>
@@ -247,7 +249,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
                   <>
                     <div className="relative w-full">
                       <label className="flex items-center space-x-2">
-                        <span className="text-[10px]">Mint</span>
+                        <span className="text-[10px]">{t('mint')}</span>
                         <input
                           type="number"
                           step={0.01}
@@ -267,7 +269,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
                     </div>
                     <div className="relative w-full">
                       <label className="flex items-center space-x-2">
-                        <span className="text-[10px]">Burn</span>
+                        <span className="text-[10px]">{t('burn')}</span>
                         <input
                           type="number"
                           step={0.01}
@@ -297,7 +299,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
           <div className={clsx('collapse overflow-visible px-2', editAdmin ? 'collapse-open ' : 'collapse-close')}>
             <div className="collapse-title flex min-h-0 items-end justify-between p-0">
               <dl className="space-y-2">
-                <dt className="text-accent">Transfer Ownership</dt>
+                <dt className="text-accent">{t('transfer-ownership')}</dt>
                 <dd className="font-bold">
                   <AddressView address={token?.admin} showShare={true} />
                 </dd>
@@ -310,7 +312,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
                   disabled={isLoadingAdmin}
                 >
                   {isLoadingAdmin && <span className="loading loading-spinner loading-xs"></span>}
-                  Confirm
+                  {t('confirm')}
                 </button>
               ) : (
                 <button
@@ -318,7 +320,7 @@ const SettingModal = ({ ...attrs }: SettingModalProps) => {
                   className="btn-outline btn-sm btn flex items-center normal-case"
                   onClick={() => setEditAdmin(true)}
                 >
-                  Modify
+                  {t('modify')}
                 </button>
               )}
             </div>

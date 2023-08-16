@@ -4,14 +4,13 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 
-
 export type BackTopProps = {
-  showHeight?: number; // 显示控件高度距离
-  minStep?: number; // 最小滚动距离
-  maxCount?: number; // 最大滚动次数
-  interval?: number; // 检测间隔 ms
-  deviation?: number; // 用户移动操作偏差
-  parent: React.RefObject<HTMLElement>; // 节点
+  showHeight?: number;
+  minStep?: number;
+  maxCount?: number;
+  interval?: number;
+  deviation?: number;
+  parent: React.RefObject<HTMLElement>;
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
 
 // back top
@@ -40,13 +39,10 @@ const BackTop = ({
     }
     return false;
   });
-  // 滚动到顶部
+
   const scrollToTop = () => {
-    // 检测时间和高度
     if (Date.now() - start >= interval && parent?.current && scroll?.top) {
-      // 用户动了页面就会有误差
       if (Math.abs(parent.current.scrollTop - history) <= deviation) {
-        // 没到顶
         if (parent.current.scrollTop > 0) {
           const scrollTop = parent.current.scrollTop - Math.min(parent.current.scrollTop, top);
           parent.current.scroll(parent.current.scrollLeft, scrollTop);
@@ -57,7 +53,7 @@ const BackTop = ({
       }
     } else window.requestAnimationFrame(scrollToTop);
   };
-  // 回到顶部
+
   const gotTop = () => {
     if (scroll?.top && parent) {
       history = parent.current?.scrollTop || 0;

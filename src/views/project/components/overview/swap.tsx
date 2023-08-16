@@ -18,12 +18,14 @@ import SliPill from './sli-pill';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import useChain from '@/hooks/useChain';
 import { InputStringNumberWithCommas, InputStringToStringNumber, ScientificToString } from '@/libs/common/utils';
+import { useTranslation } from 'next-export-i18n';
 
 
 type SwapProps = React.HTMLAttributes<HTMLElement> & {
   token: IToken
 }
 const Swap = ({ token, ...attrs }: SwapProps) => {
+  const { t } = useTranslation()
   const { chain } = useChain()
   const viewToken = useMemo(() => token ? FormatToken(token) : undefined, [token])
   const tokenChainId = useMemo(() => NetToChainId(token?.net), [token?.net])
@@ -129,27 +131,27 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
   const mintBurnHandler = async () => {
     setIsActionLoading(true)
     let isSuccess = true;
-    const text = 'Swap'
+    const text = t('swap')
     // isMint ? 'Mint' : 'Burn'
     if (!amount || amount <= 0) {
       isSuccess = false;
-      customToast.error(`${text} amount error!`)
+      customToast.error(`${text} ${t('amount-error')}`)
     }
     if (balance?.value && payAmount > balance?.value) {
       isSuccess = false;
-      customToast.error(`Insufficient ${balance?.symbol} balance!`)
+      customToast.error(`${t('insufficient')} ${balance?.symbol} ${t('balance-info')}`)
     }
     if (isSuccess) {
       try {
         await customToast.promise(
           mintBurn(),
           {
-            loading: `${text}ing...`,
+            loading: `${text}...`,
             success: () => {
-              return <b>{text} success !</b>
+              return <b>{text} {t('success')} !</b>
             },
             error: (e) => {
-              return <b>{text} error: {e?.shortMessage}.</b>
+              return <b>{text} {t('error')}: {e?.shortMessage}.</b>
             }
           })
       } catch (error) {
@@ -165,7 +167,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
         <label htmlFor="" className="relative block h-20 w-full">
           <input
             {...register('amount', {
-              min: { value: 0, message: 'Please set token supply between 0 - 99,999,999,999,999' },
+              min: { value: 0, message: t('swap-input-min') },
               setValueAs: v => v ? Number(InputStringToStringNumber(v.toString().replace(/^(00)+/g, ''), 18)) : v,
               onChange(e) {
                 const val = e.target.value.replaceAll(',', '').replace(/^(00)+/g, '');
@@ -183,7 +185,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
           />
 
           <div className="absolute bottom-1.5 left-3 flex items-center space-x-1 text-xs text-base-content/30">
-            <span>Balances:</span>
+            <span>{t('balances')}:</span>
             <NumberView
               number={balance?.formatted}
               isLoading={isLoading}
@@ -196,7 +198,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
                   //@ts-ignore
                   setValue('amount', maxBalance)
                 }}>
-                Max
+                {t('max')}
               </button>
             }
           </div>
@@ -233,7 +235,7 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
           </button>
           <div className="px-2 py-6 shadow dropdown-content bg-base-200 rounded-box z-50">
             <div className="flex items-center justify-between space-x-2">
-              <div className="text-xs">Slippage: </div>
+              <div className="text-xs">{t('slippage')}: </div>
               <SliPill sli={[0.005, 0.01, 0.03]} onSelected={item => setValue('slippage', item * 1e2)} selectValue={slippage} />
               <label>
                 <input
@@ -262,13 +264,13 @@ const Swap = ({ token, ...attrs }: SwapProps) => {
             {/* {
               isMint ? 'Mint' : 'Burn'
             } */}
-            Swap
+            {t('swap')}
           </button>
         ) :
           <ConnectWallet className="w-full" />
       }
       <div className="text-base-content/80 text-xs md:text-sm flex space-x-1">
-        <span>Receive</span>
+        <span>{t('receive')}</span>
         <NumberView before='~' number={minReceive} isLoading={isLoading} />
         <span>{isMint ? token.symbol : tokenLaunchToken?.symbol}</span>
       </div>

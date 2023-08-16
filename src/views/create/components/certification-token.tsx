@@ -3,7 +3,7 @@ import { CertificationIcon } from '@/assets';
 
 type CertificationTokenProps = {} & React.HTMLAttributes<HTMLElement>;
 
-// 认证代币标志
+
 const CertificationToken = ({ ...attrs }: CertificationTokenProps) => {
   return (
     <div

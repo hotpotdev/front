@@ -24,6 +24,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/utils/queryClient';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import SettingModal from '@/views/project/components/overview/setting-modal';
+import useLocale from '@/hooks/useLocale';
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => JSX.Element;
@@ -39,6 +40,7 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   useHtmlClassName(APP_FONT.variable)
   useNProgress();
   useTheme();
+  useLocale();
   return (
     <>
       <Head>

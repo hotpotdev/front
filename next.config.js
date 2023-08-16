@@ -11,7 +11,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: isPro,
   productionBrowserSourceMaps: false,
-  // assetPrefix: '', //加前缀
+  // assetPrefix: '',
   // basePath: '', //node
   distDir: '.next',
   compress: isPro,
@@ -29,8 +29,7 @@ const nextConfig = {
     gzipSize: true,
   },
   cleanDistDir: true,
-  trailingSlash: true,
-  // 国际化
+  trailingSlash: false,
   // i18n: {
   //   locales: ['en', 'cn'],
   //   defaultLocale: 'en',
