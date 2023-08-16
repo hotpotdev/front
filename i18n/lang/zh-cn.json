@@ -163,5 +163,6 @@
     "token-symbol-input-info": "请输入代币符号",
     "use-erc-20-info": "使用ERC-20标准代币。\n赚取交易税。",
     "project-setting": "项目设置",
-    "noset": "无集"
+    "noset": "无集",
+    "search-place": "0x...|\n编号 |\n名称 |\n代币符号"
 }

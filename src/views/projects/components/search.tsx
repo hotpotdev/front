@@ -12,7 +12,7 @@ const Search = ({ ...attrs }: SearchProps) => {
   return (
     <label {...attrs} className={clsx('relative block', attrs.className)}>
       <SearchIcon className="absolute left-2 top-2 h-8 w-8 !fill-current opacity-90 rounded-full" />
-      <input {...register('search')} placeholder='0x... | id | name | ticker' type="text" className="input-bordered input w-full pl-12 rounded-lg" />
+      <input {...register('search')} placeholder={t('search-place')} type="text" className="input-bordered input w-full pl-12 rounded-lg" />
       {
         search?.length > 0 && <button className="absolute right-2 top-3 text-base-content/30 rounded-full" onClick={() => {
           resetField('search')

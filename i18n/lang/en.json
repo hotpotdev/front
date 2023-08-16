@@ -163,5 +163,6 @@
     "token-symbol-input-info": "Please input token symbol",
     "use-erc-20-info": "Use ERC-20 standard token. Earn Trading tax.",
     "project-setting": "Project Setting",
-    "noset": "NoSet"
+    "noset": "NoSet",
+    "search-place": "0x... | id | name | ticker"
 }
